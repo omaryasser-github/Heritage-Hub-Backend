@@ -70,6 +70,7 @@ Pull requests are welcome! For major changes, please open an issue first to disc
 Before contributing, please review:
 - [BACKEND_WORKFLOW.md](file:///c:/Users/HP/Heritage-Hub-Backend/BACKEND_WORKFLOW.md) for architectural standards and code structure.
 - [api-endpoint-contract.md](file:///c:/Users/HP/Heritage-Hub-Backend/doc/api-endpoint-contract.md) for API routes, payload structures, and response schema contracts.
+- [Implementation Phases Index](file:///c:/Users/HP/Heritage-Hub-Backend/doc/phases/overview.md) for the step-by-step development roadmap.
 
 ## 📄 License
 
