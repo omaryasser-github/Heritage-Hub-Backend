@@ -1,0 +1,52 @@
+# Local Planning & Documentation
+*frontend-doc
+*arch-diagrams
+/FRONTEND_WORKFLOW.md
+
+# Dependencies
+node_modules/
+/jspm_packages/
+/web_modules/
+
+# Build & Compilation Outputs
+/dist/
+/build/
+/out/
+*.tsbuildinfo
+
+# Environment & Secrets
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+*.env
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+
+# Testing & Coverage
+/coverage/
+/.nyc_output
+
+# IDE / Editor Configurations
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# OS Specific Files
+.DS_Store
+.DS_Store?
+._*
+Thumbs.db
+ehthumbs.db
+Icon?

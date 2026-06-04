@@ -1,0 +1,224 @@
+3.1 Functional Requirements 
+ 
+3.1.1 User Management Registration & Login 
+●
+ FR-1: The system shall allow user s to register using email and pass word. 
+●
+ FR-2: The system shall allow login via social accounts (Google, Facebook, Apple). 
+●
+ FR-3: The system shall provide gues t access with limit ed features. 
+●
+ FR-4: The system shall valida te email forma t and detect duplic ates. 
+User Profile 
+●
+ FR-5: The system shall allow user s to edit their profile informa tion. 
+●
+ FR-6: The system shall store profile data including achie vemen ts, scores, and personality 
+type.
+ 
+●
+ FR-7: User s may save favorite cities, monumen ts, and content. 
+ 
+3.1.2 City & Site Sear ch 
+●
+ FR-8: The system shall allow user s to sear ch for Egyp tian cities by name. 
+●
+ FR-9: The system shall provide auto-sug gestions during typing. 
+●
+ FR-10: The system shall allow categorization of content into history, monuments, tombs, 
+statues,wars,and culture.
+ 
+ 
+3.1.3 Panor ama 360° Explor ation 
+●
+ FR-11: User s shall explor e monumen ts using 360° panor amic imag es. 
+●
+ FR-12: User s shall be able to rotate, zoom, and navigate through poin ts. 
+●
+ FR-13: Hotspots shall displa y additional informa tion or imag es. 
+●
+ FR-14: Narr ation in multiple languag es (English & Arabic). 
+ 
+3.1.4 Interactiv e Content 
+●
+ FR-15: The system shall include HD phot os, infographics, and map s. 
+●
+ FR-16: The system shall include interactiv e timelines for historical eras. 
+●
+ FR-17: The system shall displa y educ ational videos for places. 
+ 
+3.2 AI-Powered Features 
+ 
+3.2.1 AI Chatbot 
+●
+ FR-18: The chatbot shall respond to user queries about history, culture, and app 
+navigation.
+ 
+●
+ FR-19: The chatbot shall support transla tion between Arabic and English. 
+ 
+3.2.2 Quiz Gener ator Agent 
+●
+ FR-20: The system shall gener ate quizz es for each city and site. 
+●
+ FR-21: Quizz es shall include multiple ques tion types  
+●
+ FR-22: Quiz difficulty shall adap t based on user performance. 
+●
+ FR-23: Explana tions shall be provided for answers. 
+ 
+3.2.3 Recommenda tion Agent 
+●
+ FR-24: The system shall recommend cities and monumen ts based on user beha vior. 
+●
+ FR-25: Recommenda tions shall consider interests, favorites, and quiz results. 
+●
+ FR-26: Recommenda tions shall include personaliz ed learning paths. 
+ 
+3.2.4 Video Agent 
+●
+ FR-27: The agent shall gener ate or select videos related to cities and monumen ts. 
+●
+ FR-28: Videos shall cover historical facts, architectur e, or cultur al elemen ts. 
+ 
+3.2.5 Personality Agent 
+●
+ FR-29: The system shall determine user personality types (Explorer, Historian, Strategist, 
+Culture Lover).
+ 
+●
+ FR-30: The system shall award achie vemen ts based on personality type. 
+●
+ FR-31: Personal challeng es shall be gener ated to guide learning. 
+ 
+3.2.6 Awareness Agent 
+Cultur al & Historical Awareness 
+●
+ FR-32: The system shall gener ate cultur al awareness messag es about customs, greetings, 
+dress codes, and traditions relevant to each city or site.
+ 
+●
+ FR-33: The system shall provide historical awareness messages explaining the  background,  events,
+ and significance of each city, temple, tomb, or monument.
+ 
+Environmen tal & Preser vation Awareness 
+●
+ FR-34: The system shall provide preser vation awareness tips, including respecting 
+restricted areas, avoiding damage to ancient structures, and following proper behavior inside heritage sites.
+ 
+General Awareness 
+●
+ FR-35: The system shall gener ate “Did you know?” educ ational facts related to history, 
+culture, etiquette, and travel knowledge.
+ 
+●
+ FR-36: All awareness content shall support multi-language output, including Arabic and 
+English.
+ 
+Weather, Seasonal & Safety Awareness 
+●
+ FR-37: The system shall provide awareness about the best times to visit each city based 
+on seasonal conditions.
+ 
+●
+ FR-38: The system shall deliv er weather-related awareness such as heat warnings, 
+temper ature expect ations, and ideal visiting hours.
+ 
+●
+ FR-39: The system shall provide awareness about places to avoid, including crowded 
+zones, slippery pathways, restricted sections, or areas unsafe for children or elderly visitors.
+ 
+●
+ FR-40: The system shall provide price awareness, including typic al ranges for souv enirs, 
+transport ation, food, and services to prevent users from being scammed.
+ 
+Gamified Awareness 
+●
+ FR-41: Awareness-based quiz ques tions shall be gener ated by the system to educ ate 
+users through gamific ation.
+ 
+●
+ FR-42: Awareness achie vemen ts such as Herit age Prot ector, Smart Traveler, or 
+Scam-Proof
+ 
+Explorer shall be awarded to users based on quiz performance and interaction with awareness content.
+ 
+ 
+3.3 Gamific ation Features Quizzes 
+●
+ FR-43: Users shall be able to take quizz es for each city. 
+●
+ FR-44: Users earn XP, coins, and achievements. 
+●
+ FR-45: Quizz es may be repeated to improve scores. 
+ Achievements 
+●
+ FR-46: The system shall award badges for completing categories. 
+●
+ FR-47: Personality -based achievements shall be assigned. 
+●
+ FR-48: Awareness achievements shall encourage responsible learning. 
+Leaderboar ds 
+●
+ FR-49: The system shall display weekly , monthly, and all-time leaderboar ds. 
+●
+ FR-50: Leaderboar ds shall rank user s by quiz performance. 
+ 
+3.4 Feedback System 
+●
+ FR-51: User s shall rate cities, monuments, and app features. 
+●
+ FR-52: Users shall report inaccurate content or errors. 
+●
+ FR-53: Feedback shall be used to impr ove AI recommenda tions. 
+ 
+4. Non-Functional Requir emen ts 
+4.1 Performance 
+●
+ NFR-1: Panor ama views shall load within 2–3 seconds on 4G/5G. 
+●
+ NFR-2: AI responses shall be gener ated within 1.5–3 seconds. 
+●
+ NFR-3: User interface actions shall respond within 100 ms. 
+4.2 Scalability 
+●
+ NFR-4: The app shall support up to millions of user s. 
+●
+ NFR-5: The system shall allow adding new cities and panor amas without redesign. 
+4.3 Usability 
+●
+ NFR-6: User interface shall be intuitiv e for all age groups. 
+●
+ NFR-7: Onboar ding shall not exceed 60 seconds. 
+●
+ NFR-8: Buttons and icons mus t be large and readable. 
+4.4 Reliability 
+●
+ NFR-9: System uptime shall be at least 99.5%. 
+●
+ NFR-10: User data shall be back ed up daily . 
+4.5 Security 
+●
+ NFR-11: Authen tication shall use OAuth 2.0. 
+●
+ NFR-12: Data shall be encrypted using AES-256. 
+●
+ NFR-13: All API communic ation shall use HTTPS/TLS. 
+4.6 Compa tibility 
+●
+ NFR-14: App shall run smoothly on Andr oid 9+ and iOS 13+. 
+●
+ NFR-15: App shall support table t and mobile layouts. 
+4.7 Localization 
+●
+ NFR-16: All text and audio shall support English and Arabic. 
+●
+ NFR-17: Arabic languag e interface shall use proper RTL alignmen t. 
+4.8 Main tainability 
+●
+ NFR-18: System architectur e shall be modular . 
+●
+ NFR-19: Admin panel shall allow content uploads (panor amas, text, imag es). 
+●
+ NFR-20: AI agents shall be retrainable without requiring downtime. 
+ 
