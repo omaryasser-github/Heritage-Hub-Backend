@@ -4,78 +4,55 @@ A modular, enterprise-grade REST API built with NestJS and TypeScript. It serves
 
 ## 📦 Installation
 
-Clone the repository and install the project dependencies:
-
 ```bash
 git clone https://github.com/omaryasser-github/Heritage-Hub-Backend.git
 cd Heritage-Hub-Backend
 npm install
-```
-
-Set up your environment variables by copying the template file:
-
-```bash
 cp .env.example .env
 ```
 
 ## 🛠 Usage
 
-Start the local PostgreSQL and Redis services (using Docker):
-
 ```bash
 docker-compose up -d
-```
-
-Run database migrations and seed default content:
-
-```bash
 npx prisma migrate dev
 npx prisma db seed
-```
-
-Run the application in development mode:
-
-```bash
 npm run start:dev
 ```
 
-Compile the project and run in production mode:
-
-```bash
-npm run build
-npm run start:prod
-```
+Production: `npm run build` && `npm run start:prod`
 
 ## ✨ Features
 
-- **Domain-Driven Modular Design:** Clean separation of concerns (Auth, Explore, Chat, Notifications) facilitating scalability and test co-location.
-- **Refresh Token Rotation (RTR):** High-security session tracking with DB-backed family-key reuse detection and instant invalidation.
-- **Asynchronous Cache Invalidation:** Recommendations are processed in the background and served in sub-50ms reads from optimized JSONB tables.
-- **High-Frequency Writes Buffering:** User interactions (zoom, duration, pans) are queued in Redis and bulk-written to reduce DB connection load.
-- **Bilingual Payloads & Context Parsing:** Full support for Arabic and English strings on dynamic fields, facilitating LTR and RTL rendering on the mobile client.
-- **Unified Error Envelope:** Standard exception intercepts returning predictable codes and payloads for clean frontend error handling.
+- **Domain-Driven Modular Design:** Auth, Explore, Chat, Notifications — scalable and testable.
+- **Refresh Token Rotation (RTR):** DB-backed family-key reuse detection.
+- **Asynchronous Recommendations:** Background jobs + `RecommendationSnapshot` for sub-50ms reads.
+- **Interaction Telemetry:** Batched events via Redis → BullMQ → PostgreSQL for AI signals.
+- **Bilingual Payloads:** Arabic and English on dynamic fields.
+- **Unified Error Envelope:** Predictable codes for frontend handling.
 
 ## 🧰 Tech Stack
 
-- **Node.js & NestJS:** TypeScript-first backend architecture
-- **PostgreSQL:** Reliable relational transactional storage
-- **Prisma / TypeORM:** Secure database-level query operations
-- **Redis & BullMQ:** Fast in-memory caching and background job worker queues
-- **Jest & Supertest:** Comprehensive unit and integration test suite
+- **Node.js & NestJS** — TypeScript-first backend
+- **PostgreSQL** — relational storage
+- **Prisma** — ORM and migrations ([ADR-002](doc/adr/ADR-002-prisma-orm.md))
+- **Redis & BullMQ** — caching and background queues
+- **Jest & Supertest** — unit and E2E tests
 
 ## 🤝 Contributing
 
-Pull requests are welcome! For major changes, please open an issue first to discuss what you would like to change. 
+Before contributing, review:
 
-Before contributing, please review:
-- [BACKEND_WORKFLOW.md](file:///c:/Users/HP/Heritage-Hub-Backend/BACKEND_WORKFLOW.md) for architectural standards and code structure.
-- [api-endpoint-contract.md](file:///c:/Users/HP/Heritage-Hub-Backend/doc/api-endpoint-contract.md) for API routes, payload structures, and response schema contracts.
-- [Implementation Phases Index](file:///c:/Users/HP/Heritage-Hub-Backend/doc/phases/overview.md) for the step-by-step development roadmap.
+- [BACKEND_WORKFLOW.md](BACKEND_WORKFLOW.md) — architecture and code structure
+- [API contract](doc/api-endpoint-contract.md) — routes and payload schemas
+- [ADR index](doc/adr/README.md) — locked decisions (MVP scope, monuments, polymorphic FKs)
+- [Implementation phases](doc/phases/overview.md) — step-by-step roadmap
+
+Full product vision (not all MVP): `planing/req-analysis/` — see [ADR-003](doc/adr/ADR-003-mvp-scope.md).
 
 ## 📄 License
 
-MIT License  
-See `LICENSE` file for details.
+MIT License — see `LICENSE`.
 
 ## 🙌 Credits
 
