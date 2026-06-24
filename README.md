@@ -44,7 +44,8 @@ Production: `npm run build` && `npm run start:prod`
 Before contributing, review:
 
 - [BACKEND_WORKFLOW.md](BACKEND_WORKFLOW.md) — architecture and code structure
-- [API contract](doc/api-endpoint-contract.md) — routes and payload schemas
+- [API contract](doc/api-endpoint-contract.md) — MVP routes and payloads
+- [Documentation index](doc/README.md) — all project docs
 - [ADR index](doc/adr/README.md) — locked decisions (MVP scope, monuments, polymorphic FKs)
 - [Implementation phases](doc/phases/overview.md) — step-by-step roadmap
 

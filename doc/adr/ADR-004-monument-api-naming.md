@@ -16,7 +16,7 @@ Templates were mentioned as sharing one schema with monuments via a type discrim
 |---|---|
 | **Database (Prisma)** | `Monument` model |
 | **Domain / services** | `Monument`, `monumentId` |
-| **REST API** | `/monuments`, `/monuments/:monumentId`, sub-resources under that path |
+| **REST API** | `/v1/monuments`, `/v1/monuments/:monumentId`, sub-resources under that path |
 | **Seed JSON** | `monuments` array (unchanged) |
 
 ### Templates
@@ -30,7 +30,7 @@ enum MonumentKind {
 }
 ```
 
-Filter via query param: `GET /monuments?kind=monument` or `GET /monuments?kind=template`.
+Filter via query param: `GET /v1/monuments?kind=monument` or `GET /v1/monuments?kind=template`.
 
 ## Rejected
 

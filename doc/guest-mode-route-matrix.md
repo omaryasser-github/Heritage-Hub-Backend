@@ -1,11 +1,9 @@
 # Guest Mode — Route Matrix
 
 **Status:** Planned (deferred post-MVP core)  
-**ADR:** [ADR-003](./adr/ADR-003-mvp-scope.md)
+**ADR:** [ADR-003](./adr/ADR-003-mvp-scope.md) · **Contract:** [api-endpoint-contract.md](./api-endpoint-contract.md)
 
-Guest mode **will** be implemented: backend public routes first, then React Native UI (guest stack + login wall per US-03/US-03b).
-
-Until guest mode ships, use the **Interim** column below (current contract).
+All paths use the `/v1/` prefix (see contract).
 
 ---
 
@@ -13,66 +11,52 @@ Until guest mode ships, use the **Interim** column below (current contract).
 
 | Access | Routes |
 |---|---|
-| **Public** | `GET /app/config`, all `/auth/*` |
-| **Protected** | Everything else |
+| **Public** | `GET /v1/app/config`, `/v1/auth/*` (see contract for logout token rules) |
+| **Protected (Bearer)** | All other MVP routes |
 
 ---
 
 ## Target (when guest mode ships)
 
-### Public — guest can access without account
+### Public — guest browse without account
 
-| Method | Route | Notes |
-|---|---|---|
-| `GET` | `/app/config` | Bootstrap |
-| `POST` | `/auth/*` | Login/register when guest chooses |
-| `GET` | `/cities` | Browse cities |
-| `GET` | `/cities/:cityId` | City detail |
-| `GET` | `/monuments` | List monuments (filter `kind`, `category`, `city_id`) |
-| `GET` | `/monuments/:monumentId` | Monument detail |
-| `GET` | `/monuments/:monumentId/awareness` | Educational content |
-| `GET` | `/monuments/:monumentId/timeline` | Timeline |
-| `GET` | `/monuments/:monumentId/media` | Media gallery |
-| `GET` | `/monuments/:monumentId/panorama` | 360° viewer metadata |
-| `GET` | `/categories` | Category list |
-| `GET` | `/search` | Search |
-| `GET` | `/search/suggestions` | Typeahead |
-| `GET` | `/home` | **TBD** — anonymous feed vs auth-only personalized feed |
+| Method | Route |
+|---|---|
+| GET | `/v1/app/config` |
+| POST | `/v1/auth/*` |
+| GET | `/v1/cities`, `/v1/cities/:cityId` |
+| GET | `/v1/monuments`, `/v1/monuments/:monumentId` |
+| GET | `/v1/monuments/:monumentId/awareness`, `/timeline`, `/media`, `/panorama` |
+| GET | `/v1/categories`, `/v1/search`, `/v1/search/suggestions` |
+| GET | `/v1/home` _(TBD — anonymous vs personalized)_ |
 
 ### Protected — login wall (US-03b)
 
-| Method | Route | Guest behavior |
-|---|---|---|
-| `GET` | `/me`, `PATCH /me` | Login wall |
-| `GET/PATCH` | `/me/settings` | Login wall |
-| `GET` | `/me/personality` | Login wall |
-| `GET/POST/DELETE` | `/me/favorites`, `/favorites` | Login wall |
-| `POST` | `/ratings`, `/reports` | Login wall |
-| `GET` | `/me/reports` | Login wall |
-| `GET/POST` | `/personality/quiz`, submit | Login wall |
-| `GET/POST` | `/chat/sessions`, messages | Login wall — **hardest** (needs anonymous session design) |
-| `GET/POST` | `/notifications` | Login wall |
-| `POST` | `/devices/push-token` | Login wall |
-| `POST` | `/interactions/batch` | Login wall (or anonymous telemetry — TBD) |
+| Method | Route |
+|---|---|
+| GET/PATCH | `/v1/me`, `/v1/me/settings`, `/v1/me/personality` |
+| GET/POST/DELETE | `/v1/me/favorites`, `/v1/favorites` |
+| POST | `/v1/ratings`, `/v1/reports` |
+| GET | `/v1/me/reports` |
+| GET/POST | `/v1/personality/quiz`, `/v1/personality/quiz/submit` |
+| GET/POST | `/v1/chat/sessions`, `/v1/chat/sessions/:sessionId/messages` |
+| GET/POST | `/v1/notifications`, `/v1/notifications/read-all` |
+| POST | `/v1/devices/push-token` |
+| POST | `/v1/interactions/batch` _(or anonymous telemetry — TBD)_ |
 
 ---
 
-## Implementation checklist (when ready)
+## Implementation checklist
 
-1. Add `@Public()` decorator to routes in **Public** table
-2. Update `api-endpoint-contract.md` auth rule
-3. Frontend: Auth stack with Guest Access + contextual login modal (US-03b)
-4. Language preference: server for registered; **local only** for guests (US-00)
-5. Decide chatbot guest policy (public read-only FAQ vs login wall)
-6. Update Phase 3 endpoint annotations from `(Public)` to match this matrix
-
----
+1. Add `@Public()` on guest-public routes
+2. Update [api-endpoint-contract.md](./api-endpoint-contract.md) auth conventions
+3. Frontend guest stack + login wall (US-03b)
+4. Resolve open decisions below
 
 ## Open decisions
 
 | Topic | Options |
 |---|---|
-| `GET /home` for guests | Static curated feed vs require auth |
-| Guest chatbot | Block entirely vs anonymous session |
-| Guest interaction telemetry | Off vs anonymous session ID |
-| Chat history on login | Merge anonymous session into user account |
+| `GET /v1/home` for guests | Static feed vs auth-only |
+| Guest chatbot | Block vs anonymous session |
+| Guest telemetry | Off vs ephemeral session id |

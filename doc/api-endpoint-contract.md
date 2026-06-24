@@ -1,17 +1,18 @@
 # Heritage Hub — Consolidated API Contract
 
-> Single source of truth for every endpoint across the Heritage Hub application, reconciled with the locked ADRs. All paths are relative to `{{baseUrl}}`. 
-  
+> Single source of truth for every endpoint across the Heritage Hub application, reconciled with the locked ADRs. All paths are relative to `{{baseUrl}}` (host only, **without** `/v1` — e.g. `https://api.heritagehub.example.com`). Each path below includes the `/v1/` prefix.
+
+**Reference docs:** [ADR index](adr/README.md) · [BACKEND_WORKFLOW.md](../BACKEND_WORKFLOW.md) · [interaction-telemetry plan](plans/interaction-telemetry.md) · [guest-mode route matrix](guest-mode-route-matrix.md)
 
 **Conventions**
 
-- **Versioning:** all routes are versioned under `/v1/` (resolved — applies project-wide, matching `BACKEND_WORKFLOW.md`).
+- **Versioning:** all routes are versioned under `/v1/` (project-wide).
     
-- **Auth:** `Bearer {{accessToken}}` unless marked _Public_. `user_id` is always derived server-side from the JWT — never accepted from the client.
+- **Auth:** `Bearer {{accessToken}}` unless marked _Public_. `user_id` is always derived server-side from the JWT — never accepted from the client. **Interim (MVP):** all content endpoints require Bearer; public bootstrap + auth routes excepted (see [ADR-003](adr/ADR-003-mvp-scope.md)).
     
-- **Pagination:** cursor-based via `?cursor=&limit=`. Standard list response shape: `{ "data": [...], "cursor": "", "has_next": true|false }`.
+- **Pagination:** cursor-based via `?cursor=&limit=`. List response: `{ "data": [...], "cursor": "", "has_next": true|false }`. Empty list → HTTP `200` with `{ "data": [] }`.
     
-- **Error envelope:** all errors use a unified shape: `{ "error": { "code": "string", "message": "string", "details": [] } }`.
+- **Error envelope:** `{ "error": { "code": "string", "message": "string", "details": {} } }`. Single resource not found → HTTP `404` with error envelope.
     
 - **Entity references (ADR-007):** Only `USER_INTERACTION` uses the string-based polymorphic pair `entity_type` + `entity_id`. Ratings, reports, and favorites reference the target via explicit `cityId` / `monumentId` in the request body — **not** a polymorphic pair.
     
@@ -25,6 +26,8 @@
 | Method | Path | Auth | Description |
 | --- | --- | --- | --- |
 | GET | `/v1/app/config` | Public | App configuration, feature flags, minimum supported version (cacheable). |
+
+> **Internal (not mobile client):** `GET /v1/health` — ops/monitoring only; see Phase 0.
 
 ## 2\. Authentication
 
@@ -102,8 +105,8 @@
 | Method | Path | Auth | Description |
 | --- | --- | --- | --- |
 | GET | `/v1/me/favorites?cursor=&limit=` | Bearer | List the user's favorites. |
-| POST | `/v1/favorites` | Bearer | Add a favorite (target via `monumentId` / `cityId` in body — ADR-007). |
-| DELETE | `/v1/favorites/:monumentId` | Bearer | Remove a favorite. |
+| POST | `/v1/favorites` | Bearer | Add a favorite — body: `{ "monumentId" }` or `{ "cityId" }` (ADR-007). |
+| DELETE | `/v1/favorites/:targetId` | Bearer | Remove a favorite. Path param is the favorited `monumentId` or `cityId`; disambiguate with optional query `?type=monument|city` if needed. |
 
 ## 11\. Ratings & Reports
 
@@ -162,7 +165,7 @@ Request body:
     
 - **Trigger note:** `add_favorite` and `complete_quiz` are handled by their own endpoints (favorites, personality quiz) and are intentionally NOT duplicated as telemetry events.
     
-- **Reference:** see `doc/plans/interaction-telemetry.md` and the "User Interaction Telemetry — Plan" folder in this collection.
+- **Reference:** [interaction-telemetry.md](plans/interaction-telemetry.md)
     
 
 ---
@@ -209,11 +212,11 @@ These exist as requirements but are explicitly out of MVP per ADR-003. They are 
 
 ## Open Questions / Follow-ups
 
-- **Guest mode:** deferred per ADR-003. Interim rule: all endpoints require auth in MVP; guest access matrix to be defined when guest mode ships.
+- **Guest mode:** deferred per [ADR-003](adr/ADR-003-mvp-scope.md). Interim: content endpoints require Bearer; matrix in [guest-mode-route-matrix.md](guest-mode-route-matrix.md).
     
-- **Items vs Monuments:** RESOLVED per ADR-004 — `/monuments` is canonical; `/items` is retired. Any lingering `/items` references should be migrated.
+- **Items vs Monuments:** RESOLVED per [ADR-004](adr/ADR-004-monument-api-naming.md) — `/monuments` is canonical; `/items` is retired.
     
-- **Reference docs:** ADR index, `BACKEND_WORKFLOW.md`, `interaction-telemetry.md`, and the feature/phase plan should be linked from here once paths are finalized.
+- **Postman collection:** migrate `/items` → `/monuments`; mark Quizzes folder endpoints as Deferred per ADR-003.
     
 
 > Maintenance: when an endpoint is added/changed in the Heritage-Hub-API collection, update this contract in the same change so the two never drift.

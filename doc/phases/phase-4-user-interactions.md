@@ -5,6 +5,7 @@ Implement ratings, reports, notifications, and interaction telemetry batch intak
 
 ## Scope
 *   **In Scope:**
+    *   Favorites: `GET /v1/me/favorites`, `POST /v1/favorites`, `DELETE /v1/favorites/:targetId` (ADR-007).
     *   Rating upserts (`POST /v1/ratings`) — body uses `cityId` or `monumentId` (ADR-007), not `target_type` strings.
     *   Reports (`POST /v1/reports`, `GET /v1/me/reports`) — same FK pattern.
     *   Notifications inbox + mark read + read-all.
@@ -33,14 +34,16 @@ src/modules/
 ```
 
 ## Endpoints & Entities Touched
-- `POST /v1/ratings` (Protected)
-- `POST /v1/reports` (Protected)
-- `GET /v1/me/reports` (Protected)
-- `GET /v1/notifications` (Protected)
-- `POST /v1/notifications/:id/read` (Protected)
-- `POST /v1/notifications/read-all` (Protected)
-- `POST /v1/interactions/batch` (Protected)
-- **Entities:** `Rating`, `Report`, `Notification`, `UserInteraction`
+- **Endpoints:**
+  - `POST /v1/ratings` (Protected)
+  - `POST /v1/reports` (Protected)
+  - `GET /v1/me/reports` (Protected)
+  - `GET /v1/notifications` (Protected)
+  - `POST /v1/notifications/:notificationId/read` (Protected)
+  - `POST /v1/notifications/read-all` (Protected)
+  - `POST /v1/interactions/batch` (Protected)
+  - `GET /v1/me/favorites`, `POST /v1/favorites`, `DELETE /v1/favorites/:targetId` (Protected)
+- **Entities:** `Rating`, `Report`, `Notification`, `UserInteraction`, `Favorite`
 
 ## Acceptance Criteria
 - [ ] Rating upsert updates in-place; no duplicate rows per user/monument or user/city.

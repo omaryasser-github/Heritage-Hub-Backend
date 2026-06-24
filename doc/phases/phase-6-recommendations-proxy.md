@@ -27,7 +27,7 @@ src/modules/
 │   ├── recommendations.module.ts
 │   ├── recommendations.service.ts
 │   ├── controllers/
-│   │   └── home.controller.ts           # Integrates feed cache and items
+│   │   └── home.controller.ts           # Integrates feed cache and monuments
 │   ├── clients/
 │   │   └── ai-service.client.ts         # Handles REST communication with FastAPI
 │   └── dto/
@@ -40,7 +40,7 @@ src/modules/
 
 ## Endpoints & Entities Touched
 - **Endpoints:**
-  - `GET /v1/home` (Protected - aggregates explore items and recommendations)
+  - `GET /v1/home` (Protected — aggregates explore monuments and recommendations)
   - `POST /v1/chat/sessions/:sessionId/messages` (Protected - proxies message to FastAPI)
 - **Entities:**
   - `RecommendationSnapshot`

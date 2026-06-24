@@ -21,7 +21,7 @@ The backend is responsible for:
 - Processing, buffering, and logging high-frequency user interactions for AI signals ([interaction-telemetry plan](doc/plans/interaction-telemetry.md)).
 - Dispatching push notifications to iOS and Android devices.
 
-**MVP scope** (ADR-003): personality quiz, recommendations proxy, core content — **not** mobile gamification. Gamification vision is demonstrated via a **separate showcase website** (supervisor prototype; mock data; not production API). **Guest mode** is planned after core architecture; interim rule: auth required except `/app/config` and `/auth/*`.
+**MVP scope** (ADR-003): personality quiz, recommendations proxy, core content — **not** mobile gamification. Gamification vision is demonstrated via a **separate showcase website** (supervisor prototype; mock data; not production API). **Guest mode** is planned after core architecture; interim rule: Bearer required on content routes; public: `GET /v1/app/config` and `/v1/auth/*` (see [API contract](doc/api-endpoint-contract.md)).
 
 ---
 
@@ -117,7 +117,7 @@ NFR-3 (100ms UI) and NFR-2 (1.5–3s AI budget).
 - **Unified Error Envelope** — global exception filter.
 - **Referential integrity (ADR-007):** exclusive nullable FKs (`city_id` / `monument_id` + CHECK) — not generic `entity_type` + `entity_id` on content tables.
 - **Latency:** recommendations computed async; reads from `RECOMMENDATION_SNAPSHOT` &lt; 50ms.
-- **Interaction buffering:** `POST /interactions/batch` → Redis → bulk PostgreSQL writes.
+- **Interaction buffering:** `POST /v1/interactions/batch` → BullMQ → bulk PostgreSQL writes.
 - **RTR security:** refresh token reuse invalidates entire token family.
 
 ---

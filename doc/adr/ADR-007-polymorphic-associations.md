@@ -96,6 +96,12 @@ model UserInteraction {
 
 `XP_TRANSACTION` and `NOTIFICATION.source_id` remain soft references. Gamification tables are MVP-deferred (ADR-003).
 
+**`InteractionActionType` (MVP — align with [interaction-telemetry.md](../plans/interaction-telemetry.md)):** `view_monument`, `view_city`, `view_panorama`, `search`, `view_home`.
+
+**`InteractionEntityType`:** `city`, `monument`, `panorama`.
+
+Add `eventId` (unique) on `UserInteraction` for client dedupe.
+
 ---
 
 ## 4. Migration SQL — CHECK Constraints

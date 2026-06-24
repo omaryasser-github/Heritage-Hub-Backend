@@ -32,7 +32,7 @@
 ### Deferred — confirmed for later
 
 - **Guest mode** — will be implemented after backend architecture and core routes are stable, then frontend UI/login wall. See [guest-mode-route-matrix.md](../guest-mode-route-matrix.md).
-- **Interim auth rule until guest mode ships:** all endpoints require auth **except** `GET /app/config` and `/auth/*`.
+- **Interim auth rule until guest mode ships:** Bearer required on content endpoints; public: `GET /v1/app/config` and `/v1/auth/*` (see [api-endpoint-contract.md](../api-endpoint-contract.md)).
 
 ### Gamification showcase website (prototype — NOT production API)
 

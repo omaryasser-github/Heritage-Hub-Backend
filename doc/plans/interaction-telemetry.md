@@ -55,21 +55,21 @@ flowchart TD
     F --> G[("USER_INTERACTION")]
     G --> H["Recommendation Agent (Phase 6, async)"]
     H --> I[("RECOMMENDATION_SNAPSHOT")]
-    I -->|"GET /home"| A
+    I -->|"GET /v1/home"| A
 
     E -.->|"Redis/BullMQ down"| J["Degraded: sync createMany + warn log"]
     J --> G
 ```
 
-**Narrative:** The client buffers events locally and flushes batches. The intake handler validates auth, schema, and enums, enqueues to BullMQ, and returns `202 Accepted` without blocking on PostgreSQL. A worker deduplicates on `event_id` and bulk-inserts into `USER_INTERACTION`. Phase 6 reads the persisted table asynchronously and writes `RECOMMENDATION_SNAPSHOT`, which the client reads via `GET /home`.
+**Narrative:** The client buffers events locally and flushes batches. The intake handler validates auth, schema, and enums, enqueues to BullMQ, and returns `202 Accepted` without blocking on PostgreSQL. A worker deduplicates on `event_id` and bulk-inserts into `USER_INTERACTION`. Phase 6 reads the persisted table asynchronously and writes `RECOMMENDATION_SNAPSHOT`, which the client reads via `GET /v1/home`.
 
 **Recommendation triggers (MVP):**
 
 | Source | When to refresh recommendations |
 |---|---|
-| Telemetry | After `VIEW_MONUMENT`, `VIEW_CITY`, `VIEW_PANORAMA`, `SEARCH` persisted |
-| `POST /favorites` | On add favorite — do **not** duplicate as `ADD_FAVORITE` telemetry |
-| `POST /personality/quiz/submit` | On quiz complete — do **not** duplicate as `COMPLETE_QUIZ` telemetry |
+| Telemetry | After `view_monument`, `view_city`, `view_panorama`, `search` persisted |
+| `POST /v1/favorites` | On add favorite — do **not** duplicate in telemetry |
+| `POST /v1/personality/quiz/submit` | On quiz complete — do **not** duplicate in telemetry |
 
 ---
 
@@ -218,7 +218,7 @@ Uses `UserInteraction` from ADR-007:
 - `USER_INTERACTION` is the **feature source** for passive browsing signals
 - Recommendations **read from PostgreSQL**, not the live queue
 - Agent runs **asynchronously** — a few seconds of pipeline lag is acceptable (US-22)
-- Agent writes `RECOMMENDATION_SNAPSHOT`; client reads via `GET /home`
+- Agent writes `RECOMMENDATION_SNAPSHOT`; client reads via `GET /v1/home`
 - Explicit user actions (favorite, quiz submit) trigger refresh from their **service layer**, not duplicated in telemetry
 
 ---
@@ -286,13 +286,13 @@ Future additions must be **additive** — do not break the MVP event contract (`
 
 1. **Enum completeness:** Confirm with AI/recommendations owner that five MVP `action_type` values are sufficient for Phase 6.
 2. **Retention:** 90-day default acceptable for privacy policy? Legal review before store submission.
-3. **Postman collection:** Add `POST /interactions/batch` to Heritage-Hub-API collection.
+3. **Postman collection:** Add `POST /v1/interactions/batch` to Heritage-Hub-API collection.
 
 ---
 
 ## 15. Affected Artifacts
 
-- [api-endpoint-contract.md](../api-endpoint-contract.md) — `POST /interactions/batch`
+- [api-endpoint-contract.md](../api-endpoint-contract.md) — canonical MVP routes (`POST /v1/interactions/batch`)
 - [project-features-arch.md](../project-features-arch.md) — Feature 15
 - [ADR-007](../adr/ADR-007-polymorphic-associations.md) — update `InteractionActionType` enum at implementation
 - Heritage-Hub-API Postman collection

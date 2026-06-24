@@ -2,7 +2,7 @@
 
 Step-by-step backend delivery index. Maps phases to ADRs, workflow stages, and key endpoints.
 
-> **Authority:** When docs conflict, [ADR index](../adr/README.md) wins.
+> **Authority:** [api-endpoint-contract.md](../api-endpoint-contract.md) for routes · [ADR index](../adr/README.md) for decisions.
 
 ---
 
@@ -16,7 +16,7 @@ Step-by-step backend delivery index. Maps phases to ADRs, workflow stages, and k
 | [3](./phase-3-core-domain.md) | Core domain CRUD | Stage 3 | Cities, monuments, panorama, search |
 | [4](./phase-4-user-interactions.md) | Ratings, reports, notifications | Stage 5 (partial) | Favorites, ratings, reports, notifications |
 | [5](./phase-5-personality-quiz.md) | Personality quiz | Stage 3–4 | Static onboarding quiz |
-| [6](./phase-6-recommendations-proxy.md) | AI proxy & home feed | Stage 4 | FastAPI client, `/home`, chat proxy |
+| [6](./phase-6-recommendations-proxy.md) | AI proxy & home feed | Stage 4 | FastAPI client, `GET /v1/home`, chat proxy |
 | [7](./phase-7-hardening.md) | Hardening | Stage 6 (partial) | Throttler, Helmet, Swagger `/v1/docs` |
 | [8](./phase-8-testing.md) | Testing & QA | Stage 6 | Jest unit + Supertest E2E |
 | [9](./phase-9-deployment.md) | Deployment & ops | Stage 6 | Docker, CI/CD, monitoring |
@@ -50,7 +50,7 @@ See [ADR-003](../adr/ADR-003-mvp-scope.md):
 - Mobile gamification (leaderboards, XP, badges, challenges)
 - Gamification showcase website is a **separate prototype** — not production API
 - Gamified `/quizzes/*` endpoints
-- Guest mode (interim: auth everywhere except `/app/config` + `/auth/*`)
+- Guest mode (interim: Bearer on content; public `/v1/app/config` + `/v1/auth/*`)
 - Admin dashboards
 
 ---
