@@ -1,10 +1,7 @@
-import { INestApplication, ValidationPipe } from '@nestjs/common';
-import { Test, TestingModule } from '@nestjs/testing';
+import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
 import { App } from 'supertest/types';
-import { AppModule } from '../src/app.module';
-import { HttpExceptionFilter } from '../src/shared/filters/http-exception.filter';
-import { ResponseInterceptor } from '../src/shared/interceptors/response.interceptor';
+import { createE2eApp } from './helpers/e2e-app.factory';
 
 interface ApiResponse<T> {
   data: T;
@@ -22,22 +19,7 @@ describe('Phase 0 (e2e)', () => {
   let app: INestApplication<App>;
 
   beforeAll(async () => {
-    const moduleFixture: TestingModule = await Test.createTestingModule({
-      imports: [AppModule],
-    }).compile();
-
-    app = moduleFixture.createNestApplication();
-    app.setGlobalPrefix('v1');
-    app.useGlobalPipes(
-      new ValidationPipe({
-        whitelist: true,
-        forbidNonWhitelisted: true,
-        transform: true,
-      }),
-    );
-    app.useGlobalFilters(new HttpExceptionFilter());
-    app.useGlobalInterceptors(new ResponseInterceptor());
-    await app.init();
+    app = await createE2eApp();
   });
 
   afterAll(async () => {

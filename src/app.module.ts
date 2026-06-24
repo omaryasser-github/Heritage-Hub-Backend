@@ -1,10 +1,15 @@
 import { Module } from '@nestjs/common';
+import { APP_GUARD } from '@nestjs/core';
 import { ConfigModule } from '@nestjs/config';
 import configuration from './core/config/configuration';
 import { envValidationSchema } from './core/config/env.validation';
 import { PrismaModule } from './core/database/prisma.module';
 import { AppLoggerService } from './core/logger/logger.service';
+import { AuthModule } from './modules/auth/auth.module';
+import { UsersModule } from './modules/users/users.module';
 import { AppConfigController, HealthController } from './shared/controllers/health.controller';
+import { JwtAuthGuard } from './shared/guards/jwt-auth.guard';
+import { RolesGuard } from './shared/guards/roles.guard';
 
 @Module({
   imports: [
@@ -14,8 +19,14 @@ import { AppConfigController, HealthController } from './shared/controllers/heal
       validationSchema: envValidationSchema,
     }),
     PrismaModule,
+    AuthModule,
+    UsersModule,
   ],
   controllers: [HealthController, AppConfigController],
-  providers: [AppLoggerService],
+  providers: [
+    AppLoggerService,
+    { provide: APP_GUARD, useClass: JwtAuthGuard },
+    { provide: APP_GUARD, useClass: RolesGuard },
+  ],
 })
 export class AppModule {}
