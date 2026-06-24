@@ -10,7 +10,7 @@ Implement registration, login, token rotation, and guard-based route access cont
     *   Build a `Session` (or `Device`) database entity to store hashed refresh tokens, device identifiers, and push tokens.
     *   Implement Refresh Token Rotation (RTR) on the `/v1/auth/refresh` endpoint with reuse detection logic.
     *   Build authentication guards (`JwtAuthGuard`, `RolesGuard`) and decorators (`@CurrentUser`, `@Roles`).
-    *   Secure endpoints by default, and resolve the `auth: null` vs route protection mismatch (explicit `@Public` decorators).
+    *   Secure endpoints by default (interim: auth required except `@Public()` on `/app/config` and `/auth/*`). Guest mode deferred — [guest-mode-route-matrix.md](../guest-mode-route-matrix.md).
     *   Provide user profile routes (`GET /v1/me`, `PATCH /v1/me`).
 *   **Out Scope:**
     *   Social Authentication integrations (Google, Facebook, Apple) (can be stubbed for Phase 2).

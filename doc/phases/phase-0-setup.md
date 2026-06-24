@@ -12,7 +12,7 @@ Establish a clean, standardized NestJS codebase scaffold with environment config
     *   Enforce a global `/v1` route prefix.
     *   Create a global `HttpExceptionFilter` to map all failures to the Unified Error Envelope.
     *   Implement a global `ResponseInterceptor` to wrap standard data responses.
-    *   Add a public `/v1/health` endpoint.
+    *   Add public `/v1/health` and `/v1/app/config` endpoints (bootstrap: feature flags, min app version).
 *   **Out Scope:**
     *   Database migrations or model definitions (deferred to Phase 1).
     *   Authentication guards (deferred to Phase 2).
@@ -32,7 +32,7 @@ src/
 │   │   ├── configuration.ts     # Config objects
 │   │   └── env.validation.ts    # Joi schema validation for .env
 │   ├── database/
-│   │   └── database.module.ts   # Database client configuration wrapper
+│   │   └── prisma.module.ts       # Prisma client (ADR-002)
 │   └── logger/
 │       └── logger.service.ts    # Application custom logger
 └── shared/
@@ -47,6 +47,7 @@ src/
 ## Endpoints & Entities Touched
 - **Endpoints:**
   - `GET /v1/health` (Public, no auth)
+  - `GET /v1/app/config` (Public, no auth)
 - **Entities:**
   - None
 
