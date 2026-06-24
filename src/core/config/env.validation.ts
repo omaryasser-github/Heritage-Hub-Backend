@@ -7,4 +7,6 @@ export const envValidationSchema = Joi.object({
   FEATURE_GUEST_MODE: Joi.string().valid('true', 'false').default('false'),
   FEATURE_CHAT_ENABLED: Joi.string().valid('true', 'false').default('true'),
   FEATURE_RECOMMENDATIONS_ENABLED: Joi.string().valid('true', 'false').default('true'),
+  DATABASE_URL: Joi.string().uri().optional(),
+  REDIS_URL: Joi.string().uri().optional(),
 });
