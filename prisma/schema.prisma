@@ -1,0 +1,445 @@
+// Heritage Hub — MVP data model (ADR-002, ADR-004, ADR-007)
+// Gamification tables omitted per ADR-003.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ─── Enums ───────────────────────────────────────────────────────────────────
+
+enum Language {
+  en
+  ar
+}
+
+enum UserRole {
+  user
+  admin
+}
+
+enum ContentStatus {
+  draft
+  published
+}
+
+enum MonumentKind {
+  monument
+  template
+}
+
+enum MediaAssetType {
+  photo
+  infographic
+  map
+  video
+}
+
+enum AwarenessCardType {
+  safety
+  cultural
+  did_you_know
+}
+
+enum ReportReason {
+  inaccurate
+  inappropriate
+  outdated
+  other
+}
+
+enum ReportStatus {
+  pending
+  reviewed
+  resolved
+  dismissed
+}
+
+enum NotificationType {
+  system
+  recommendation
+  report_update
+  general
+}
+
+enum PersonalityType {
+  explorer
+  historian
+  strategist
+  culture_lover
+}
+
+enum ChatMessageRole {
+  user
+  assistant
+  system
+}
+
+enum InteractionEntityType {
+  city
+  monument
+  panorama
+}
+
+enum InteractionActionType {
+  view_monument
+  view_city
+  view_panorama
+  search
+  view_home
+}
+
+// ─── Identity ────────────────────────────────────────────────────────────────
+
+model User {
+  id           String   @id @default(uuid()) @db.Uuid
+  email        String   @unique
+  passwordHash String?  @map("password_hash")
+  displayName  String?  @map("display_name")
+  avatarUrl    String?  @map("avatar_url")
+  language     Language @default(en)
+  role         UserRole @default(user)
+  settings     Json     @default("{}")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  sessions                Session[]
+  personalityProfile      PersonalityProfile?
+  favorites               Favorite[]
+  ratings                 Rating[]
+  reports                 Report[]
+  userInteractions        UserInteraction[]
+  notifications           Notification[]
+  chatSessions            ChatSession[]
+  recommendationSnapshots RecommendationSnapshot[]
+
+  @@map("user")
+}
+
+model Session {
+  id               String    @id @default(uuid()) @db.Uuid
+  userId           String    @map("user_id") @db.Uuid
+  user             User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  refreshTokenHash String    @map("refresh_token_hash")
+  familyId         String    @map("family_id") @db.Uuid
+  expiresAt        DateTime  @map("expires_at")
+  revokedAt        DateTime? @map("revoked_at")
+  createdAt        DateTime  @default(now()) @map("created_at")
+
+  @@index([userId])
+  @@index([familyId])
+  @@map("session")
+}
+
+model PersonalityProfile {
+  id              String          @id @default(uuid()) @db.Uuid
+  userId          String          @unique @map("user_id") @db.Uuid
+  user            User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  personalityType PersonalityType @map("personality_type")
+  assessedAt      DateTime        @map("assessed_at")
+  createdAt       DateTime        @default(now()) @map("created_at")
+  updatedAt       DateTime        @updatedAt @map("updated_at")
+
+  @@map("personality_profile")
+}
+
+// ─── Core content ────────────────────────────────────────────────────────────
+
+model City {
+  id             String        @id @default(uuid()) @db.Uuid
+  slug           String        @unique
+  nameEn         String        @map("name_en")
+  nameAr         String        @map("name_ar")
+  governorate    String
+  governorateAr  String        @map("governorate_ar")
+  descriptionEn  String?       @map("description_en")
+  descriptionAr  String?       @map("description_ar")
+  thumbnailUrl   String?       @map("thumbnail_url")
+  latitude       Float
+  longitude      Float
+  status         ContentStatus @default(published)
+  createdAt      DateTime      @default(now()) @map("created_at")
+  updatedAt      DateTime      @updatedAt @map("updated_at")
+
+  monuments     Monument[]
+  favorites     Favorite[]
+  ratings       Rating[]
+  reports       Report[]
+  mediaAssets   MediaAsset[]
+  awarenessCards AwarenessCard[]
+  timelineEvents TimelineEvent[]
+
+  @@map("city")
+}
+
+model Category {
+  id        String   @id @default(uuid()) @db.Uuid
+  slug      String   @unique
+  nameEn    String   @map("name_en")
+  nameAr    String   @map("name_ar")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  monuments Monument[]
+
+  @@map("category")
+}
+
+model Monument {
+  id            String        @id @default(uuid()) @db.Uuid
+  cityId        String        @map("city_id") @db.Uuid
+  city          City          @relation(fields: [cityId], references: [id], onDelete: Cascade)
+  slug          String        @unique
+  nameEn        String        @map("name_en")
+  nameAr        String        @map("name_ar")
+  descriptionEn String        @map("description_en")
+  descriptionAr String        @map("description_ar")
+  subcategory   String?
+  latitude      Float
+  longitude     Float
+  thumbnailUrl  String?       @map("thumbnail_url")
+  entryFee      String?       @map("entry_fee")
+  openingHours  String?       @map("opening_hours")
+  tags          String[]
+  kind          MonumentKind  @default(monument)
+  status        ContentStatus @default(published)
+  createdAt     DateTime      @default(now()) @map("created_at")
+  updatedAt     DateTime      @updatedAt @map("updated_at")
+
+  categories     Category[]
+  panorama       Panorama?
+  favorites      Favorite[]
+  ratings        Rating[]
+  reports        Report[]
+  mediaAssets    MediaAsset[]
+  awarenessCards AwarenessCard[]
+  timelineEvents TimelineEvent[]
+
+  @@index([cityId])
+  @@index([kind])
+  @@map("monument")
+}
+
+model Panorama {
+  id              String   @id @default(uuid()) @db.Uuid
+  monumentId      String   @unique @map("monument_id") @db.Uuid
+  monument        Monument @relation(fields: [monumentId], references: [id], onDelete: Cascade)
+  urlLow          String   @map("url_low")
+  urlMedium       String   @map("url_medium")
+  urlHigh         String   @map("url_high")
+  narrationUrlEn  String?  @map("narration_url_en")
+  narrationUrlAr  String?  @map("narration_url_ar")
+  cameraBounds    Json?    @map("camera_bounds")
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+
+  hotspots Hotspot[]
+
+  @@map("panorama")
+}
+
+model Hotspot {
+  id         String   @id @default(uuid()) @db.Uuid
+  panoramaId String   @map("panorama_id") @db.Uuid
+  panorama   Panorama @relation(fields: [panoramaId], references: [id], onDelete: Cascade)
+  posX       Float    @map("pos_x")
+  posY       Float    @map("pos_y")
+  posZ       Float    @map("pos_z")
+  titleEn    String   @map("title_en")
+  titleAr    String   @map("title_ar")
+  bodyEn     String   @map("body_en")
+  bodyAr     String   @map("body_ar")
+  imageUrl   String?  @map("image_url")
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
+
+  @@index([panoramaId])
+  @@map("hotspot")
+}
+
+// ADR-007: exclusive nullable FKs — CHECK constraints in migration SQL
+model MediaAsset {
+  id         String         @id @default(uuid()) @db.Uuid
+  cityId     String?        @map("city_id") @db.Uuid
+  city       City?          @relation(fields: [cityId], references: [id], onDelete: Cascade)
+  monumentId String?        @map("monument_id") @db.Uuid
+  monument   Monument?      @relation(fields: [monumentId], references: [id], onDelete: Cascade)
+  assetType  MediaAssetType @map("asset_type")
+  url        String
+  captionEn  String?        @map("caption_en")
+  captionAr  String?        @map("caption_ar")
+  createdAt  DateTime       @default(now()) @map("created_at")
+  updatedAt  DateTime       @updatedAt @map("updated_at")
+
+  @@index([cityId])
+  @@index([monumentId])
+  @@map("media_asset")
+}
+
+model TimelineEvent {
+  id            String   @id @default(uuid()) @db.Uuid
+  cityId        String?  @map("city_id") @db.Uuid
+  city          City?    @relation(fields: [cityId], references: [id], onDelete: Cascade)
+  monumentId    String?  @map("monument_id") @db.Uuid
+  monument      Monument? @relation(fields: [monumentId], references: [id], onDelete: Cascade)
+  titleEn       String   @map("title_en")
+  titleAr       String   @map("title_ar")
+  descriptionEn String   @map("description_en")
+  descriptionAr String   @map("description_ar")
+  imageUrl      String?  @map("image_url")
+  year          Int
+  era           String?
+  displayOrder  Int      @default(0) @map("display_order")
+  createdAt     DateTime @default(now()) @map("created_at")
+  updatedAt     DateTime @updatedAt @map("updated_at")
+
+  @@index([cityId])
+  @@index([monumentId])
+  @@map("timeline_event")
+}
+
+model AwarenessCard {
+  id         String            @id @default(uuid()) @db.Uuid
+  cityId     String?           @map("city_id") @db.Uuid
+  city       City?             @relation(fields: [cityId], references: [id], onDelete: Cascade)
+  monumentId String?           @map("monument_id") @db.Uuid
+  monument   Monument?         @relation(fields: [monumentId], references: [id], onDelete: Cascade)
+  cardType   AwarenessCardType @map("card_type")
+  bodyEn     String            @map("body_en")
+  bodyAr     String            @map("body_ar")
+  createdAt  DateTime          @default(now()) @map("created_at")
+  updatedAt  DateTime          @updatedAt @map("updated_at")
+
+  @@index([cityId])
+  @@index([monumentId])
+  @@map("awareness_card")
+}
+
+// ─── User interactions ───────────────────────────────────────────────────────
+
+model Favorite {
+  id         String    @id @default(uuid()) @db.Uuid
+  userId     String    @map("user_id") @db.Uuid
+  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  cityId     String?   @map("city_id") @db.Uuid
+  city       City?     @relation(fields: [cityId], references: [id], onDelete: Cascade)
+  monumentId String?   @map("monument_id") @db.Uuid
+  monument   Monument? @relation(fields: [monumentId], references: [id], onDelete: Cascade)
+  createdAt  DateTime  @default(now()) @map("created_at")
+
+  @@unique([userId, cityId])
+  @@unique([userId, monumentId])
+  @@index([userId])
+  @@map("favorite")
+}
+
+model Rating {
+  id         String    @id @default(uuid()) @db.Uuid
+  userId     String    @map("user_id") @db.Uuid
+  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  cityId     String?   @map("city_id") @db.Uuid
+  city       City?     @relation(fields: [cityId], references: [id], onDelete: Cascade)
+  monumentId String?   @map("monument_id") @db.Uuid
+  monument   Monument? @relation(fields: [monumentId], references: [id], onDelete: Cascade)
+  stars      Int
+  updatedAt  DateTime  @updatedAt @map("updated_at")
+
+  @@unique([userId, cityId])
+  @@unique([userId, monumentId])
+  @@index([cityId])
+  @@index([monumentId])
+  @@map("rating")
+}
+
+model Report {
+  id          String       @id @default(uuid()) @db.Uuid
+  userId      String       @map("user_id") @db.Uuid
+  user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  cityId      String?      @map("city_id") @db.Uuid
+  city        City?        @relation(fields: [cityId], references: [id], onDelete: Cascade)
+  monumentId  String?      @map("monument_id") @db.Uuid
+  monument    Monument?    @relation(fields: [monumentId], references: [id], onDelete: Cascade)
+  reason      ReportReason
+  description String?
+  status      ReportStatus @default(pending)
+  createdAt   DateTime     @default(now()) @map("created_at")
+
+  @@index([userId])
+  @@index([cityId])
+  @@index([monumentId])
+  @@map("report")
+}
+
+model UserInteraction {
+  id              String                @id @default(uuid()) @db.Uuid
+  eventId         String                @unique @map("event_id") @db.Uuid
+  userId          String                @map("user_id") @db.Uuid
+  user            User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  entityType      InteractionEntityType @map("entity_type")
+  entityId        String                @map("entity_id") @db.Uuid
+  actionType      InteractionActionType @map("action_type")
+  durationSeconds Int?                  @map("duration_seconds")
+  occurredAt      DateTime                @map("occurred_at")
+  createdAt       DateTime              @default(now()) @map("created_at")
+
+  @@index([entityType, entityId])
+  @@index([userId, createdAt])
+  @@map("user_interaction")
+}
+
+model Notification {
+  id               String           @id @default(uuid()) @db.Uuid
+  userId           String           @map("user_id") @db.Uuid
+  user             User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  notificationType NotificationType @map("notification_type")
+  title            String
+  body             String
+  isRead           Boolean          @default(false) @map("is_read")
+  sourceId         String?          @map("source_id") @db.Uuid
+  createdAt        DateTime         @default(now()) @map("created_at")
+
+  @@index([userId, createdAt])
+  @@map("notification")
+}
+
+// ─── AI context ──────────────────────────────────────────────────────────────
+
+model ChatSession {
+  id           String   @id @default(uuid()) @db.Uuid
+  userId       String   @map("user_id") @db.Uuid
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  startedAt    DateTime @default(now()) @map("started_at")
+  lastActiveAt DateTime @default(now()) @map("last_active_at")
+
+  messages ChatMessage[]
+
+  @@index([userId])
+  @@map("chat_session")
+}
+
+model ChatMessage {
+  id        String          @id @default(uuid()) @db.Uuid
+  sessionId String          @map("session_id") @db.Uuid
+  session   ChatSession     @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  role      ChatMessageRole
+  content   String          @db.Text
+  createdAt DateTime        @default(now()) @map("created_at")
+
+  @@index([sessionId, createdAt])
+  @@map("chat_message")
+}
+
+model RecommendationSnapshot {
+  id              String   @id @default(uuid()) @db.Uuid
+  userId          String   @map("user_id") @db.Uuid
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  recommendations Json
+  generatedAt     DateTime @map("generated_at")
+
+  @@index([userId, generatedAt])
+  @@map("recommendation_snapshot")
+}
