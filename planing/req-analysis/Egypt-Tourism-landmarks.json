@@ -1,0 +1,2321 @@
+{
+    "dataset": "Egypt Tourism Landmarks",
+    "version": "2.0",
+    "description": "Normalized, relational dataset of Egypt's top tourism landmarks. Aligned to the HERITAGE_HUB ERD: separate categories, cities, and monuments tables with UUID PKs, readable slugs, bilingual (EN/AR) content, and WGS84 coordinates ready for the explore map.",
+    "generated_at": "2026-06-24",
+    "counts": {
+        "categories": 9,
+        "cities": 25,
+        "monuments": 71
+    },
+    "schema": {
+        "categories": "lookup table -> {uuid, slug, name_en, name_ar}",
+        "cities": "lookup table -> {uuid, slug, name_en, name_ar, governorate, governorate_ar, latitude, longitude}",
+        "monuments": "main table -> {uuid, slug, name_en, name_ar, description_en, description_ar, subcategory, latitude, longitude, thumbnail_url, rating, entry_fee, opening_hours, tags[], city_uuid (FK), city_slug, category_uuids[] (M2M), category_slugs[]}"
+    },
+    "seeding_order": [
+        "categories",
+        "cities",
+        "monuments (resolve city_uuid + category_uuids into _CategoryToMonument)"
+    ],
+    "categories": [
+        {
+            "uuid": "ead5be27-7146-5c31-851f-8cfb68ed19be",
+            "slug": "ancient-monument",
+            "name_en": "Ancient Monument",
+            "name_ar": "أثر قديم"
+        },
+        {
+            "uuid": "092d3f99-82b9-500f-960d-d30089fa8fe5",
+            "slug": "attraction",
+            "name_en": "Attraction",
+            "name_ar": "معلم سياحي"
+        },
+        {
+            "uuid": "54cc1b17-c1f1-55d1-976a-7a195ef73b8d",
+            "slug": "church",
+            "name_en": "Church",
+            "name_ar": "كنيسة"
+        },
+        {
+            "uuid": "07ccd304-7da4-561e-a87d-ffbba4452b61",
+            "slug": "historic-site",
+            "name_en": "Historic Site",
+            "name_ar": "موقع تاريخي"
+        },
+        {
+            "uuid": "813549fa-8b29-56f1-a345-4fbaf70a9a88",
+            "slug": "market",
+            "name_en": "Market",
+            "name_ar": "سوق"
+        },
+        {
+            "uuid": "977adfb7-4557-56e6-afdb-96f70979f82a",
+            "slug": "mosque",
+            "name_en": "Mosque",
+            "name_ar": "مسجد"
+        },
+        {
+            "uuid": "07a68533-1b85-5420-a33a-206cfc44fd3f",
+            "slug": "museum",
+            "name_en": "Museum",
+            "name_ar": "متحف"
+        },
+        {
+            "uuid": "87ed155a-b2a4-51b8-b652-eaca5c478960",
+            "slug": "natural",
+            "name_en": "Natural Site",
+            "name_ar": "موقع طبيعي"
+        },
+        {
+            "uuid": "bb388635-2879-5381-81fe-81cc23913a07",
+            "slug": "temple",
+            "name_en": "Temple",
+            "name_ar": "معبد"
+        }
+    ],
+    "cities": [
+        {
+            "uuid": "9b5183e8-1625-5bce-935c-f93de269bb60",
+            "slug": "abu-simbel",
+            "name_en": "Abu Simbel",
+            "name_ar": "أبو سمبل",
+            "governorate": "Aswan",
+            "governorate_ar": "أسوان",
+            "latitude": 22.3372,
+            "longitude": 31.6258
+        },
+        {
+            "uuid": "5f0a14dd-db1f-5cfe-be34-e17472e2c470",
+            "slug": "alexandria",
+            "name_en": "Alexandria",
+            "name_ar": "الإسكندرية",
+            "governorate": "Alexandria",
+            "governorate_ar": "الإسكندرية",
+            "latitude": 31.210486,
+            "longitude": 29.912529
+        },
+        {
+            "uuid": "c56842e6-1006-594a-9a71-a549dbfb554d",
+            "slug": "aswan",
+            "name_en": "Aswan",
+            "name_ar": "أسوان",
+            "governorate": "Aswan",
+            "governorate_ar": "أسوان",
+            "latitude": 24.0231,
+            "longitude": 32.8824
+        },
+        {
+            "uuid": "97e50369-9e8a-5224-ae49-81fb46268d4b",
+            "slug": "bahariya",
+            "name_en": "Bahariya",
+            "name_ar": "الواحات البحرية",
+            "governorate": "Giza",
+            "governorate_ar": "الجيزة",
+            "latitude": 28.15,
+            "longitude": 28.8
+        },
+        {
+            "uuid": "704a6de7-3eaf-5f35-a22c-d65dcef20299",
+            "slug": "cairo",
+            "name_en": "Cairo",
+            "name_ar": "القاهرة",
+            "governorate": "Cairo",
+            "governorate_ar": "القاهرة",
+            "latitude": 30.030747,
+            "longitude": 31.248747
+        },
+        {
+            "uuid": "cee08831-dd02-5c58-a482-fd784d8153d9",
+            "slug": "dahab",
+            "name_en": "Dahab",
+            "name_ar": "دهب",
+            "governorate": "South Sinai",
+            "governorate_ar": "جنوب سيناء",
+            "latitude": 28.5407,
+            "longitude": 34.52555
+        },
+        {
+            "uuid": "b5501f19-87a9-5057-b932-d14081b3297e",
+            "slug": "dahshur",
+            "name_en": "Dahshur",
+            "name_ar": "دهشور",
+            "governorate": "Giza",
+            "governorate_ar": "الجيزة",
+            "latitude": 29.7903,
+            "longitude": 31.2093
+        },
+        {
+            "uuid": "a2d05696-eeb3-5667-840c-31156fc76baa",
+            "slug": "edfu",
+            "name_en": "Edfu",
+            "name_ar": "إدفو",
+            "governorate": "Aswan",
+            "governorate_ar": "أسوان",
+            "latitude": 24.9777,
+            "longitude": 32.8735
+        },
+        {
+            "uuid": "c6762938-4385-5fb0-91c0-2f24b2dd2520",
+            "slug": "el-gouna",
+            "name_en": "El Gouna",
+            "name_ar": "الجونة",
+            "governorate": "Red Sea",
+            "governorate_ar": "البحر الأحمر",
+            "latitude": 27.395,
+            "longitude": 33.678
+        },
+        {
+            "uuid": "8549eaca-3331-5853-8a4e-e98433ce4dd7",
+            "slug": "esna",
+            "name_en": "Esna",
+            "name_ar": "إسنا",
+            "governorate": "Luxor",
+            "governorate_ar": "الأقصر",
+            "latitude": 25.2933,
+            "longitude": 32.5536
+        },
+        {
+            "uuid": "c0cd8bc4-fb7a-567c-9cf6-0166c3bca710",
+            "slug": "farafra",
+            "name_en": "Farafra",
+            "name_ar": "الفرافرة",
+            "governorate": "New Valley",
+            "governorate_ar": "الوادي الجديد",
+            "latitude": 27.46665,
+            "longitude": 28.23335
+        },
+        {
+            "uuid": "d04492aa-f9e2-59e7-8c80-6057f961da1c",
+            "slug": "fayoum",
+            "name_en": "Fayoum",
+            "name_ar": "الفيوم",
+            "governorate": "Fayoum",
+            "governorate_ar": "الفيوم",
+            "latitude": 29.330325,
+            "longitude": 30.375125
+        },
+        {
+            "uuid": "5e101a45-9114-5a16-b749-5e19b2b27a71",
+            "slug": "giza",
+            "name_en": "Giza",
+            "name_ar": "الجيزة",
+            "governorate": "Giza",
+            "governorate_ar": "الجيزة",
+            "latitude": 29.982767,
+            "longitude": 31.1304
+        },
+        {
+            "uuid": "bad2dee9-3746-52b9-9655-46057782a623",
+            "slug": "hurghada",
+            "name_en": "Hurghada",
+            "name_ar": "الغردقة",
+            "governorate": "Red Sea",
+            "governorate_ar": "البحر الأحمر",
+            "latitude": 27.21025,
+            "longitude": 33.8996
+        },
+        {
+            "uuid": "2be32625-2a8f-586f-b84d-498cbf48c410",
+            "slug": "ismailia",
+            "name_en": "Ismailia",
+            "name_ar": "الإسماعيلية",
+            "governorate": "Ismailia",
+            "governorate_ar": "الإسماعيلية",
+            "latitude": 30.5852,
+            "longitude": 32.2654
+        },
+        {
+            "uuid": "146d7749-c06d-523d-ae53-56958fc571a8",
+            "slug": "kom-ombo",
+            "name_en": "Kom Ombo",
+            "name_ar": "كوم أمبو",
+            "governorate": "Aswan",
+            "governorate_ar": "أسوان",
+            "latitude": 24.4523,
+            "longitude": 32.9281
+        },
+        {
+            "uuid": "b38fc0bd-62fc-5a95-907e-c8ada6066442",
+            "slug": "luxor",
+            "name_en": "Luxor",
+            "name_ar": "الأقصر",
+            "governorate": "Luxor",
+            "governorate_ar": "الأقصر",
+            "latitude": 25.721425,
+            "longitude": 32.619037
+        },
+        {
+            "uuid": "c004570d-c346-51ee-8187-51345de11973",
+            "slug": "mit-rahina",
+            "name_en": "Mit Rahina",
+            "name_ar": "ميت رهينة",
+            "governorate": "Giza",
+            "governorate_ar": "الجيزة",
+            "latitude": 29.8497,
+            "longitude": 31.2549
+        },
+        {
+            "uuid": "1043d900-5dd7-5a86-b265-0b79f77f93ff",
+            "slug": "qena",
+            "name_en": "Qena",
+            "name_ar": "قنا",
+            "governorate": "Qena",
+            "governorate_ar": "قنا",
+            "latitude": 26.1419,
+            "longitude": 32.67
+        },
+        {
+            "uuid": "fecdcd0a-9acd-517f-8ac7-a9609339f2d7",
+            "slug": "red-sea",
+            "name_en": "Red Sea",
+            "name_ar": "البحر الأحمر",
+            "governorate": "Red Sea",
+            "governorate_ar": "البحر الأحمر",
+            "latitude": 28.88315,
+            "longitude": 32.4538
+        },
+        {
+            "uuid": "7a9e842a-b147-54ed-83c3-456dd65173e2",
+            "slug": "saint-catherine",
+            "name_en": "Saint Catherine",
+            "name_ar": "سانت كاترين",
+            "governorate": "South Sinai",
+            "governorate_ar": "جنوب سيناء",
+            "latitude": 28.5475,
+            "longitude": 33.97445
+        },
+        {
+            "uuid": "35f80850-4828-520e-b0e4-f164e4669eaa",
+            "slug": "saqqara",
+            "name_en": "Saqqara",
+            "name_ar": "سقارة",
+            "governorate": "Giza",
+            "governorate_ar": "الجيزة",
+            "latitude": 29.8711,
+            "longitude": 31.2165
+        },
+        {
+            "uuid": "7db951b7-3fb4-5e9e-9907-c3802d0bb070",
+            "slug": "sharm-el-sheikh",
+            "name_en": "Sharm El Sheikh",
+            "name_ar": "شرم الشيخ",
+            "governorate": "South Sinai",
+            "governorate_ar": "جنوب سيناء",
+            "latitude": 27.8183,
+            "longitude": 34.29345
+        },
+        {
+            "uuid": "fb6fa1cd-f20e-59b8-978b-b4c10ac18333",
+            "slug": "siwa",
+            "name_en": "Siwa",
+            "name_ar": "سيوة",
+            "governorate": "Matrouh",
+            "governorate_ar": "مطروح",
+            "latitude": 29.197667,
+            "longitude": 25.532667
+        },
+        {
+            "uuid": "da68333f-232a-5b03-9f4a-63e96d626a42",
+            "slug": "sohag",
+            "name_en": "Sohag",
+            "name_ar": "سوهاج",
+            "governorate": "Sohag",
+            "governorate_ar": "سوهاج",
+            "latitude": 26.1849,
+            "longitude": 31.9192
+        }
+    ],
+    "monuments": [
+        {
+            "uuid": "36eafc03-f621-5c25-a332-4943068ab2b8",
+            "slug": "abu-simbel",
+            "name_en": "Abu Simbel Temples",
+            "name_ar": "معبدا أبو سمبل",
+            "description_en": "Ramesses II's colossal rock-cut temples, relocated to save them from Lake Nasser.",
+            "description_ar": "معبدا رمسيس الثاني الصخريان الضخمان اللذان نُقلا لإنقاذهما من مياه بحيرة ناصر.",
+            "subcategory": "ancient",
+            "latitude": 22.3372,
+            "longitude": 31.6258,
+            "thumbnail_url": "",
+            "rating": null,
+            "entry_fee": "",
+            "opening_hours": "05:00-18:00",
+            "tags": [
+                "UNESCO",
+                "ancient egypt",
+                "must-visit",
+                "iconic"
+            ],
+            "city_uuid": "9b5183e8-1625-5bce-935c-f93de269bb60",
+            "city_slug": "abu-simbel",
+            "category_uuids": [
+                "bb388635-2879-5381-81fe-81cc23913a07"
+            ],
+            "category_slugs": [
+                "temple"
+            ]
+        },
+        {
+            "uuid": "2d1c3ed2-d3d6-580d-874c-2ec2d31474b6",
+            "slug": "abu-abbas",
+            "name_en": "Abu al-Abbas al-Mursi Mosque",
+            "name_ar": "مسجد المرسي أبو العباس",
+            "description_en": "Alexandria's grandest mosque, an icon of the city's Anfoushi district.",
+            "description_ar": "أكبر وأشهر مساجد الإسكندرية ومعلم بارز في حي الأنفوشي.",
+            "subcategory": "historic",
+            "latitude": 31.2056,
+            "longitude": 29.8836,
+            "thumbnail_url": "",
+            "rating": null,
+            "entry_fee": "",
+            "opening_hours": "open",
+            "tags": [
+                "islamic",
+                "architecture"
+            ],
+            "city_uuid": "5f0a14dd-db1f-5cfe-be34-e17472e2c470",
+            "city_slug": "alexandria",
+            "category_uuids": [
+                "977adfb7-4557-56e6-afdb-96f70979f82a"
+            ],
+            "category_slugs": [
+                "mosque"
+            ]
+        },
+        {
+            "uuid": "48566f27-e14c-5b70-8248-824d260625ed",
+            "slug": "al-azhar",
+            "name_en": "Al-Azhar Mosque",
+            "name_ar": "الجامع الأزهر",
+            "description_en": "Founded in 970 AD, one of Islam's most prestigious centers of learning.",
+            "description_ar": "تأسس عام 970 ميلاديًا، وهو من أعرق منارات العلم في العالم الإسلامي.",
+            "subcategory": "historic",
+            "latitude": 30.0456,
+            "longitude": 31.2625,
+            "thumbnail_url": "",
+            "rating": null,
+            "entry_fee": "",
+            "opening_hours": "open",
+            "tags": [
+                "islamic",
+                "oldest",
+                "spiritual"
+            ],
+            "city_uuid": "704a6de7-3eaf-5f35-a22c-d65dcef20299",
+            "city_slug": "cairo",
+            "category_uuids": [
+                "977adfb7-4557-56e6-afdb-96f70979f82a"
+            ],
+            "category_slugs": [
+                "mosque"
+            ]
+        },
+        {
+            "uuid": "51de284d-0c25-5359-9eb6-2c3493acce34",
+            "slug": "muizz-street",
+            "name_en": "Al-Muizz Street",
+            "name_ar": "شارع المعز لدين الله",
+            "description_en": "An open-air museum of Islamic architecture — the densest concentration of medieval monuments in the world.",
+            "description_ar": "متحف مفتوح للعمارة الإسلامية يضم أكبر تجمّع للآثار في العصور الوسطى بالعالم.",
+            "subcategory": "street",
+            "latitude": 30.05,
+            "longitude": 31.2614,
+            "thumbnail_url": "",
+            "rating": null,
+            "entry_fee": "",
+            "opening_hours": "open",
+            "tags": [
+                "islamic",
+                "heritage",
+                "walking"
+            ],
+            "city_uuid": "704a6de7-3eaf-5f35-a22c-d65dcef20299",
+            "city_slug": "cairo",
+            "category_uuids": [
+                "07ccd304-7da4-561e-a87d-ffbba4452b61"
+            ],
+            "category_slugs": [
+                "historic-site"
+            ]
+        },
+        {
+            "uuid": "22489195-2323-55dd-a5c9-567e90e976e5",
+            "slug": "high-dam",
+            "name_en": "Aswan High Dam",
+            "name_ar": "السد العالي",
+            "description_en": "Monumental 1960s dam that created Lake Nasser and reshaped modern Egypt.",
+            "description_ar": "سد ضخم شُيّد في الستينيات وأنشأ بحيرة ناصر وأعاد تشكيل مصر الحديثة.",
+            "subcategory": "landmark",
+            "latitude": 23.9707,
+            "longitude": 32.8773,
+            "thumbnail_url": "",
+            "rating": null,
+            "entry_fee": "",
+            "opening_hours": "08:00-17:00",
+            "tags": [
+                "modern",
+                "engineering"
+            ],
+            "city_uuid": "c56842e6-1006-594a-9a71-a549dbfb554d",
+            "city_slug": "aswan",
+            "category_uuids": [
+                "092d3f99-82b9-500f-960d-d30089fa8fe5"
+            ],
+            "category_slugs": [
+                "attraction"
+            ]
+        },
+        {
+            "uuid": "e6b752aa-f863-5339-a322-bd24bfd4e67a",
+            "slug": "baron-palace",
+            "name_en": "Baron Empain Palace",
+            "name_ar": "قصر البارون إمبان",
+            "description_en": "An eccentric Hindu-temple-inspired palace in Heliopolis, now a museum.",
+            "description_ar": "قصر غريب الطراز مستوحى من المعابد الهندية في مصر الجديدة، تحوّل إلى متحف.",
+            "subcategory": "palace",
+            "latitude": 30.0876,
+            "longitude": 31.33,
+            "thumbnail_url": "",
+            "rating": null,
+            "entry_fee": "",
+            "opening_hours": "09:00-17:00",
+            "tags": [
+                "palace",
+                "architecture",
+                "unusual"
+            ],
+            "city_uuid": "704a6de7-3eaf-5f35-a22c-d65dcef20299",
+            "city_slug": "cairo",
+            "category_uuids": [
+                "092d3f99-82b9-500f-960d-d30089fa8fe5"
+            ],
+            "category_slugs": [
+                "attraction"
+            ]
+        },
+        {
+            "uuid": "15e3be3d-064b-5018-a4df-2a87f2ccf9a5",
+            "slug": "ben-ezra",
+            "name_en": "Ben Ezra Synagogue",
+            "name_ar": "معبد بن عزرا",
+            "description_en": "The oldest synagogue in Cairo, in the heart of Coptic Cairo.",
+            "description_ar": "أقدم معبد يهودي في القاهرة، يقع في قلب مجمع مصر القديمة القبطي.",
+            "subcategory": "synagogue",
+            "latitude": 30.0053,
+            "longitude": 31.231,
+            "thumbnail_url": "",
+            "rating": null,
+            "entry_fee": "",
+            "opening_hours": "09:00-16:00",
+            "tags": [
+                "jewish",
+                "heritage",
+                "hidden gem"
+            ],
+            "city_uuid": "704a6de7-3eaf-5f35-a22c-d65dcef20299",
+            "city_slug": "cairo",
+            "category_uuids": [
+                "07ccd304-7da4-561e-a87d-ffbba4452b61"
+            ],
+            "category_slugs": [
+                "historic-site"
+            ]
+        },
+        {
+            "uuid": "f106e406-cc47-5104-b83e-0f3183f18d16",
+            "slug": "dahshur-bent",
+            "name_en": "Bent & Red Pyramids (Dahshur)",
+            "name_ar": "الهرم المنحني والأحمر",
+            "description_en": "Two of the earliest true pyramids, built by Pharaoh Sneferu and key to pyramid evolution.",
+            "description_ar": "الهرمان المنحني والأحمر، من أوائل الأهرامات الحقيقية التي بناها الملك سنفرو.",
+            "subcategory": "pyramid",
+            "latitude": 29.7903,
+            "longitude": 31.2093,
+            "thumbnail_url": "",
+            "rating": null,
+            "entry_fee": "100 EGP",
+            "opening_hours": "08:00-16:00",
+            "tags": [
+                "ancient egypt",
+                "hidden gem"
+            ],
+            "city_uuid": "b5501f19-87a9-5057-b932-d14081b3297e",
+            "city_slug": "dahshur",
+            "category_uuids": [
+                "ead5be27-7146-5c31-851f-8cfb68ed19be"
+            ],
+            "category_slugs": [
+                "ancient-monument"
+            ]
+        },
+        {
+            "uuid": "a4a3db24-f9b0-5ed7-b838-7c5e3d3d1269",
+            "slug": "bibliotheca",
+            "name_en": "Bibliotheca Alexandrina",
+            "name_ar": "مكتبة الإسكندرية",
+            "description_en": "A stunning modern revival of the legendary ancient Library of Alexandria.",
+            "description_ar": "إحياء معماري حديث ومذهل لمكتبة الإسكندرية القديمة الأسطورية.",
+            "subcategory": "library",
+            "latitude": 31.2089,
+            "longitude": 29.9092,
+            "thumbnail_url": "",
+            "rating": null,
+            "entry_fee": "",
+            "opening_hours": "10:00-19:00",
+            "tags": [
+                "modern",
+                "library",
+                "culture",
+                "must-visit"
+            ],
+            "city_uuid": "5f0a14dd-db1f-5cfe-be34-e17472e2c470",
+            "city_slug": "alexandria",
+            "category_uuids": [
+                "092d3f99-82b9-500f-960d-d30089fa8fe5"
+            ],
+            "category_slugs": [
+                "attraction"
+            ]
+        },
+        {
+            "uuid": "02f8ecae-f50d-5042-a5ef-cec045126d49",
+            "slug": "black-desert",
+            "name_en": "Black Desert",
+            "name_ar": "الصحراء السوداء",
+            "description_en": "Volcanic black-capped hills stretching across the Bahariya landscape.",
+            "description_ar": "تلال بركانية سوداء القمم تمتد عبر مناظر الواحات البحرية.",
+            "subcategory": "desert",
+            "latitude": 28.15,
+            "longitude": 28.8,
+            "thumbnail_url": "",
+            "rating": null,
+            "entry_fee": "",
+            "opening_hours": "",
+            "tags": [
+                "desert",
+                "nature",
+                "offroad"
+            ],
+            "city_uuid": "97e50369-9e8a-5224-ae49-81fb46268d4b",
+            "city_slug": "bahariya",
+            "category_uuids": [
+                "87ed155a-b2a4-51b8-b652-eaca5c478960"
+            ],
+            "category_slugs": [
+                "natural"
+            ]
+        },
+        {
+            "uuid": "5cbe0dfd-01f0-5719-9298-ad9d5c3f3794",
+            "slug": "blue-hole",
+            "name_en": "Blue Hole",
+            "name_ar": "الثقب الأزرق",
+            "description_en": "A legendary submarine sinkhole and one of the world's most famous dive sites.",
+            "description_ar": "حفرة بحرية أسطورية وأحد أشهر مواقع الغوص في العالم بدهب.",
+            "subcategory": "dive_site",
+            "latitude": 28.5722,
+            "longitude": 34.5375,
+            "thumbnail_url": "",
+            "rating": null,
+            "entry_fee": "",
+            "opening_hours": "",
+            "tags": [
+                "diving",
+                "red sea",
+                "iconic"
+            ],
+            "city_uuid": "cee08831-dd02-5c58-a482-fd784d8153d9",
+            "city_slug": "dahab",
+            "category_uuids": [
+                "87ed155a-b2a4-51b8-b652-eaca5c478960"
+            ],
+            "category_slugs": [
+                "natural"
+            ]
+        },
+        {
+            "uuid": "45b81a4f-3334-572a-8fef-8e1a3668e9c7",
+            "slug": "cairo-tower",
+            "name_en": "Cairo Tower",
+            "name_ar": "برج القاهرة",
+            "description_en": "187m lattice tower on Gezira Island with 360° views of Cairo and the Nile.",
+            "description_ar": "برج شبكي بارتفاع 187 مترًا في جزيرة الزمالك يطل على القاهرة والنيل بزاوية 360 درجة.",
+            "subcategory": "landmark",
+            "latitude": 30.0459,
+            "longitude": 31.2243,
+            "thumbnail_url": "",
+            "rating": null,
+            "entry_fee": "",
+            "opening_hours": "09:00-00:00",
+            "tags": [
+                "views",
+                "modern",
+                "iconic"
+            ],
+            "city_uuid": "704a6de7-3eaf-5f35-a22c-d65dcef20299",
+            "city_slug": "cairo",
+            "category_uuids": [
+                "092d3f99-82b9-500f-960d-d30089fa8fe5"
+            ],
+            "category_slugs": [
+                "attraction"
+            ]
+        },
+        {
+            "uuid": "e8019e07-ce3d-5152-bd16-f9a3233f71af",
+            "slug": "catacombs",
+            "name_en": "Catacombs of Kom el Shoqafa",
+            "name_ar": "سراديب كوم الشقافة",
+            "description_en": "An eerie multi-level Greco-Roman necropolis blending Egyptian and classical art.",
+            "description_ar": "مقابر أثرية يونانية رومانية متعددة الطوابق تمزج بين الفن المصري والكلاسيكي في الإسكندرية.",
+            "subcategory": "catacomb",
+            "latitude": 31.1786,
+            "longitude": 29.892,
+            "thumbnail_url": "",
+            "rating": null,
+            "entry_fee": "",
+            "opening_hours": "09:00-16:30",
+            "tags": [
+                "roman",
+                "unusual",
+                "underground"
+            ],
+            "city_uuid": "5f0a14dd-db1f-5cfe-be34-e17472e2c470",
+            "city_slug": "alexandria",
+            "category_uuids": [
+                "ead5be27-7146-5c31-851f-8cfb68ed19be"
+            ],
+            "category_slugs": [
+                "ancient-monument"
+            ]
+        },
+        {
+            "uuid": "a1b55d78-757c-5807-89f3-5a151ed714f1",
+            "slug": "abu-serga",
+            "name_en": "Church of St. Sergius (Abu Serga)",
+            "name_ar": "كنيسة أبو سرجة",
+            "description_en": "Ancient church built over a crypt where the Holy Family is said to have sheltered.",
+            "description_ar": "كنيسة قديمة بُنيت فوق كهف يُقال إن العائلة المقدسة لجأت إليه.",
+            "subcategory": "coptic",
+            "latitude": 30.0058,
+            "longitude": 31.2306,
+            "thumbnail_url": "",
+            "rating": null,
+            "entry_fee": "",
+            "opening_hours": "09:00-16:00",
+            "tags": [
+                "coptic",
+                "christian",
+                "holy family"
+            ],
+            "city_uuid": "704a6de7-3eaf-5f35-a22c-d65dcef20299",
+            "city_slug": "cairo",
+            "category_uuids": [
+                "54cc1b17-c1f1-55d1-976a-7a195ef73b8d"
+            ],
+            "category_slugs": [
+                "church"
+            ]
+        },
+        {
+            "uuid": "20240c58-d885-540f-99a6-aa2786f37557",
+            "slug": "qaitbay",
+            "name_en": "Citadel of Qaitbay",
+            "name_ar": "قلعة قايتباي",
+            "description_en": "A 15th-century seafront fortress built on the site of the ancient Lighthouse of Alexandria.",
+            "description_ar": "قلعة بحرية من القرن الخامس عشر شُيّدت على موقع منارة الإسكندرية القديمة.",
+            "subcategory": "fortress",
+            "latitude": 31.2139,
+            "longitude": 29.8856,
+            "thumbnail_url": "",
+            "rating": null,
+            "entry_fee": "",
+            "opening_hours": "09:00-16:00",
+            "tags": [
+                "fortress",
+                "sea",
+                "iconic"
+            ],
+            "city_uuid": "5f0a14dd-db1f-5cfe-be34-e17472e2c470",
+            "city_slug": "alexandria",
+            "category_uuids": [
+                "07ccd304-7da4-561e-a87d-ffbba4452b61"
+            ],
+            "category_slugs": [
+                "historic-site"
+            ]
+        },
+        {
+            "uuid": "5aa09337-aae1-5dcb-a04d-60cced6f8698",
+            "slug": "cleopatra-pool",
+            "name_en": "Cleopatra's Spring (Siwa)",
+            "name_ar": "عين كليوباترا",
+            "description_en": "A natural stone-rimmed spring for swimming in the heart of Siwa Oasis.",
+            "description_ar": "عين طبيعية محاطة بالحجارة للسباحة في قلب واحة سيوة.",
+            "subcategory": "spring",
+            "latitude": 29.1869,
+            "longitude": 25.5586,
+            "thumbnail_url": "",
+            "rating": null,
+            "entry_fee": "",
+            "opening_hours": "open",
+            "tags": [
+                "oasis",
+                "swimming",
+                "nature"
+            ],
+            "city_uuid": "fb6fa1cd-f20e-59b8-978b-b4c10ac18333",
+            "city_slug": "siwa",
+            "category_uuids": [
+                "87ed155a-b2a4-51b8-b652-eaca5c478960"
+            ],
+            "category_slugs": [
+                "natural"
+            ]
+        },
+        {
+            "uuid": "53319906-5713-5afd-9a2d-ad055db7790a",
+            "slug": "colossi-memnon",
+            "name_en": "Colossi of Memnon",
+            "name_ar": "تمثالا ممنون",
+            "description_en": "Two massive 18m statues of Amenhotep III guarding the Theban necropolis.",
+            "description_ar": "تمثالان ضخمان بارتفاع 18 مترًا للملك أمنحتب الثالث يحرسان جبّانة طيبة.",
+            "subcategory": "statue",
+            "latitude": 25.7205,
+            "longitude": 32.6106,
+            "thumbnail_url": "",
+            "rating": null,
+            "entry_fee": "Free",
+            "opening_hours": "open",
+            "tags": [
+                "ancient egypt",
+                "free"
+            ],
+            "city_uuid": "b38fc0bd-62fc-5a95-907e-c8ada6066442",
+            "city_slug": "luxor",
+            "category_uuids": [
+                "ead5be27-7146-5c31-851f-8cfb68ed19be"
+            ],
+            "category_slugs": [
+                "ancient-monument"
+            ]
+        },
+        {
+            "uuid": "4025d2a3-a205-52ff-b626-bc96488e9c7c",
+            "slug": "coptic-museum",
+            "name_en": "Coptic Museum",
+            "name_ar": "المتحف القبطي",
+            "description_en": "The world's largest collection of Coptic Christian art and artifacts.",
+            "description_ar": "يضم أكبر مجموعة في العالم من الفنون والآثار القبطية المسيحية.",
+            "subcategory": "religious",
+            "latitude": 30.0058,
+            "longitude": 31.23,
+            "thumbnail_url": "",
+            "rating": null,
+            "entry_fee": "",
+            "opening_hours": "09:00-16:00",
+            "tags": [
+                "coptic",
+                "christian",
+                "history"
+            ],
+            "city_uuid": "704a6de7-3eaf-5f35-a22c-d65dcef20299",
+            "city_slug": "cairo",
+            "category_uuids": [
+                "07a68533-1b85-5420-a33a-206cfc44fd3f"
+            ],
+            "category_slugs": [
+                "museum"
+            ]
+        },
+        {
+            "uuid": "099cdc79-e7db-5c0a-b26c-cffbb8f9dc2a",
+            "slug": "crystal-mountain",
+            "name_en": "Crystal Mountain",
+            "name_ar": "جبل الكريستال",
+            "description_en": "A glittering ridge of quartz crystal in the Western Desert.",
+            "description_ar": "حافة متلألئة من بلورات الكوارتز في الصحراء الغربية.",
+            "subcategory": "geological",
+            "latitude": 27.6333,
+            "longitude": 28.25,
+            "thumbnail_url": "",
+            "rating": null,
+            "entry_fee": "Free",
+            "opening_hours": "",
+            "tags": [
+                "desert",
+                "geology",
+                "unusual"
+            ],
+            "city_uuid": "c0cd8bc4-fb7a-567c-9cf6-0166c3bca710",
+            "city_slug": "farafra",
+            "category_uuids": [
+                "87ed155a-b2a4-51b8-b652-eaca5c478960"
+            ],
+            "category_slugs": [
+                "natural"
+            ]
+        },
+        {
+            "uuid": "44acecfb-2db0-5f9e-9136-7000ff826c54",
+            "slug": "dahab-lagoon",
+            "name_en": "Dahab Lagoon",
+            "name_ar": "لاجون دهب",
+            "description_en": "A laid-back bohemian beach town beloved by divers, windsurfers, and backpackers.",
+            "description_ar": "بلدة شاطئية هادئة يعشقها الغواصون وراكبو الأمواج والرحّالة.",
+            "subcategory": "beach",
+            "latitude": 28.5092,
+            "longitude": 34.5136,
+            "thumbnail_url": "",
+            "rating": null,
+            "entry_fee": "",
+            "opening_hours": "open",
+            "tags": [
+                "beach",
+                "relaxed",
+                "windsurfing"
+            ],
+            "city_uuid": "cee08831-dd02-5c58-a482-fd784d8153d9",
+            "city_slug": "dahab",
+            "category_uuids": [
+                "092d3f99-82b9-500f-960d-d30089fa8fe5"
+            ],
+            "category_slugs": [
+                "attraction"
+            ]
+        },
+        {
+            "uuid": "a1380402-2318-5aaa-811b-2e66a5bf8669",
+            "slug": "dendera",
+            "name_en": "Dendera Temple (Hathor)",
+            "name_ar": "معبد دندرة",
+            "description_en": "Spectacularly preserved temple of the goddess Hathor with a famous astronomical ceiling.",
+            "description_ar": "معبد محفوظ بشكل مذهل للإلهة حتحور، يشتهر بسقفه الفلكي الشهير.",
+            "subcategory": "ancient",
+            "latitude": 26.1419,
+            "longitude": 32.67,
+            "thumbnail_url": "",
+            "rating": null,
+            "entry_fee": "",
+            "opening_hours": "06:00-17:00",
+            "tags": [
+                "ancient egypt",
+                "well-preserved",
+                "hidden gem"
+            ],
+            "city_uuid": "1043d900-5dd7-5a86-b265-0b79f77f93ff",
+            "city_slug": "qena",
+            "category_uuids": [
+                "bb388635-2879-5381-81fe-81cc23913a07"
+            ],
+            "category_slugs": [
+                "temple"
+            ]
+        },
+        {
+            "uuid": "b52f750a-35d0-510c-bdfd-802c7c6dc1d8",
+            "slug": "egyptian-museum",
+            "name_en": "Egyptian Museum (Tahrir)",
+            "name_ar": "المتحف المصري بالتحرير",
+            "description_en": "Historic museum on Tahrir Square with over 120,000 ancient Egyptian artifacts.",
+            "description_ar": "متحف تاريخي بميدان التحرير يضم أكثر من 120 ألف قطعة أثرية مصرية قديمة.",
+            "subcategory": "archaeology",
+            "latitude": 30.0478,
+            "longitude": 31.2336,
+            "thumbnail_url": "",
+            "rating": null,
+            "entry_fee": "",
+            "opening_hours": "09:00-17:00",
+            "tags": [
+                "classic",
+                "history",
+                "mummies"
+            ],
+            "city_uuid": "704a6de7-3eaf-5f35-a22c-d65dcef20299",
+            "city_slug": "cairo",
+            "category_uuids": [
+                "07a68533-1b85-5420-a33a-206cfc44fd3f"
+            ],
+            "category_slugs": [
+                "museum"
+            ]
+        },
+        {
+            "uuid": "98547b2e-44be-54b1-85e6-a8f05b3707ff",
+            "slug": "el-gouna",
+            "name_en": "El Gouna",
+            "name_ar": "الجونة",
+            "description_en": "An upscale lagoon resort town of islands, marinas, and golf on the Red Sea.",
+            "description_ar": "مدينة منتجعات راقية من الجزر والمراسي وملاعب الجولف على البحر الأحمر.",
+            "subcategory": "resort_town",
+            "latitude": 27.395,
+            "longitude": 33.678,
+            "thumbnail_url": "",
+            "rating": null,
+            "entry_fee": "",
+            "opening_hours": "open",
+            "tags": [
+                "resort",
+                "luxury",
+                "beach"
+            ],
+            "city_uuid": "c6762938-4385-5fb0-91c0-2f24b2dd2520",
+            "city_slug": "el-gouna",
+            "category_uuids": [
+                "092d3f99-82b9-500f-960d-d30089fa8fe5"
+            ],
+            "category_slugs": [
+                "attraction"
+            ]
+        },
+        {
+            "uuid": "426feace-8447-5fde-95ef-57bb5eb63e5e",
+            "slug": "gayer-anderson",
+            "name_en": "Gayer-Anderson Museum",
+            "name_ar": "متحف جاير أندرسون",
+            "description_en": "A beautifully preserved 17th-century Ottoman house museum next to Ibn Tulun Mosque.",
+            "description_ar": "متحف في منزل عثماني من القرن السابع عشر محفوظ ببراعة بجوار مسجد ابن طولون.",
+            "subcategory": "historic_house",
+            "latitude": 30.0283,
+            "longitude": 31.2494,
+            "thumbnail_url": "",
+            "rating": null,
+            "entry_fee": "",
+            "opening_hours": "09:00-16:00",
+            "tags": [
+                "ottoman",
+                "hidden gem"
+            ],
+            "city_uuid": "704a6de7-3eaf-5f35-a22c-d65dcef20299",
+            "city_slug": "cairo",
+            "category_uuids": [
+                "07a68533-1b85-5420-a33a-206cfc44fd3f"
+            ],
+            "category_slugs": [
+                "museum"
+            ]
+        },
+        {
+            "uuid": "ea628066-33a2-556e-9623-14934d893d4f",
+            "slug": "giftun-island",
+            "name_en": "Giftun Island",
+            "name_ar": "جزيرة الجفتون",
+            "description_en": "A protected island with pristine white beaches and coral reefs off Hurghada.",
+            "description_ar": "جزيرة محمية بشواطئ بيضاء نقية وشعاب مرجانية قبالة الغردقة.",
+            "subcategory": "island",
+            "latitude": 27.1925,
+            "longitude": 33.955,
+            "thumbnail_url": "",
+            "rating": null,
+            "entry_fee": "",
+            "opening_hours": "",
+            "tags": [
+                "island",
+                "snorkeling",
+                "beach",
+                "nature"
+            ],
+            "city_uuid": "bad2dee9-3746-52b9-9655-46057782a623",
+            "city_slug": "hurghada",
+            "category_uuids": [
+                "87ed155a-b2a4-51b8-b652-eaca5c478960"
+            ],
+            "category_slugs": [
+                "natural"
+            ]
+        },
+        {
+            "uuid": "f01e18a1-c873-5fa9-bd0e-09bfe3214d54",
+            "slug": "gem",
+            "name_en": "Grand Egyptian Museum (GEM)",
+            "name_ar": "المتحف المصري الكبير",
+            "description_en": "The world's largest archaeological museum, housing Tutankhamun's complete collection.",
+            "description_ar": "أكبر متحف أثري في العالم، يضم مجموعة توت عنخ آمون الكاملة.",
+            "subcategory": "archaeology",
+            "latitude": 29.9938,
+            "longitude": 31.1194,
+            "thumbnail_url": "",
+            "rating": null,
+            "entry_fee": "",
+            "opening_hours": "09:00-18:00",
+            "tags": [
+                "new",
+                "must-visit",
+                "tutankhamun"
+            ],
+            "city_uuid": "5e101a45-9114-5a16-b749-5e19b2b27a71",
+            "city_slug": "giza",
+            "category_uuids": [
+                "07a68533-1b85-5420-a33a-206cfc44fd3f"
+            ],
+            "category_slugs": [
+                "museum"
+            ]
+        },
+        {
+            "uuid": "21997c46-c57e-5999-aec1-10d0fedc7081",
+            "slug": "great-sphinx",
+            "name_en": "Great Sphinx of Giza",
+            "name_ar": "أبو الهول",
+            "description_en": "Colossal limestone statue with a lion's body and a human head, guarding the Giza pyramids.",
+            "description_ar": "تمثال ضخم من الحجر الجيري بجسد أسد ورأس إنسان يحرس أهرامات الجيزة.",
+            "subcategory": "statue",
+            "latitude": 29.9753,
+            "longitude": 31.1376,
+            "thumbnail_url": "",
+            "rating": null,
+            "entry_fee": "",
+            "opening_hours": "07:00-17:00",
+            "tags": [
+                "ancient egypt",
+                "iconic",
+                "must-visit"
+            ],
+            "city_uuid": "5e101a45-9114-5a16-b749-5e19b2b27a71",
+            "city_slug": "giza",
+            "category_uuids": [
+                "ead5be27-7146-5c31-851f-8cfb68ed19be"
+            ],
+            "category_slugs": [
+                "ancient-monument"
+            ]
+        },
+        {
+            "uuid": "cbd092ad-9ada-55e9-a8b0-a07fa0fc7930",
+            "slug": "hurghada-marina",
+            "name_en": "Hurghada Marina",
+            "name_ar": "مارينا الغردقة",
+            "description_en": "A lively waterfront marina with yachts, restaurants, and nightlife.",
+            "description_ar": "مارينا حيوية على الواجهة البحرية باليخوت والمطاعم والحياة الليلية.",
+            "subcategory": "marina",
+            "latitude": 27.228,
+            "longitude": 33.8442,
+            "thumbnail_url": "",
+            "rating": null,
+            "entry_fee": "",
+            "opening_hours": "open",
+            "tags": [
+                "beach",
+                "nightlife",
+                "red sea"
+            ],
+            "city_uuid": "bad2dee9-3746-52b9-9655-46057782a623",
+            "city_slug": "hurghada",
+            "category_uuids": [
+                "092d3f99-82b9-500f-960d-d30089fa8fe5"
+            ],
+            "category_slugs": [
+                "attraction"
+            ]
+        },
+        {
+            "uuid": "fe65c299-b544-52fd-b7fe-0eef04f4bad6",
+            "slug": "karnak",
+            "name_en": "Karnak Temple Complex",
+            "name_ar": "معبد الكرنك",
+            "description_en": "The largest religious building ever constructed — a vast complex of temples and the Great Hypostyle Hall.",
+            "description_ar": "أكبر مبنى ديني شُيّد على الإطلاق، مجمّع معابد يضم صالة الأعمدة الكبرى.",
+            "subcategory": "ancient",
+            "latitude": 25.7188,
+            "longitude": 32.6573,
+            "thumbnail_url": "",
+            "rating": null,
+            "entry_fee": "",
+            "opening_hours": "06:00-17:30",
+            "tags": [
+                "UNESCO",
+                "ancient egypt",
+                "must-visit",
+                "temple"
+            ],
+            "city_uuid": "b38fc0bd-62fc-5a95-907e-c8ada6066442",
+            "city_slug": "luxor",
+            "category_uuids": [
+                "bb388635-2879-5381-81fe-81cc23913a07"
+            ],
+            "category_slugs": [
+                "temple"
+            ]
+        },
+        {
+            "uuid": "2279de60-13b3-5cd7-b101-8ee72f59bd2b",
+            "slug": "khan-el-khalili",
+            "name_en": "Khan el-Khalili Bazaar",
+            "name_ar": "خان الخليلي",
+            "description_en": "Cairo's legendary medieval souq, packed with crafts, spices, and cafés.",
+            "description_ar": "سوق القاهرة الأسطوري من العصور الوسطى، يعجّ بالحرف والتوابل والمقاهي.",
+            "subcategory": "souq",
+            "latitude": 30.0477,
+            "longitude": 31.2622,
+            "thumbnail_url": "",
+            "rating": null,
+            "entry_fee": "",
+            "opening_hours": "10:00-23:00",
+            "tags": [
+                "market",
+                "shopping",
+                "culture",
+                "must-visit"
+            ],
+            "city_uuid": "704a6de7-3eaf-5f35-a22c-d65dcef20299",
+            "city_slug": "cairo",
+            "category_uuids": [
+                "813549fa-8b29-56f1-a345-4fbaf70a9a88"
+            ],
+            "category_slugs": [
+                "market"
+            ]
+        },
+        {
+            "uuid": "8b0c729a-a84a-5acb-ab64-db01a6f549d4",
+            "slug": "kom-ombo",
+            "name_en": "Kom Ombo Temple",
+            "name_ar": "معبد كوم أمبو",
+            "description_en": "A unique double temple dedicated to the crocodile god Sobek and Horus.",
+            "description_ar": "معبد مزدوج فريد مخصص للإله سوبك (التمساح) والإله حورس.",
+            "subcategory": "ancient",
+            "latitude": 24.4523,
+            "longitude": 32.9281,
+            "thumbnail_url": "",
+            "rating": null,
+            "entry_fee": "",
+            "opening_hours": "07:00-16:00",
+            "tags": [
+                "ancient egypt",
+                "nile cruise"
+            ],
+            "city_uuid": "146d7749-c06d-523d-ae53-56958fc571a8",
+            "city_slug": "kom-ombo",
+            "category_uuids": [
+                "bb388635-2879-5381-81fe-81cc23913a07"
+            ],
+            "category_slugs": [
+                "temple"
+            ]
+        },
+        {
+            "uuid": "33fe31cf-5812-5175-bf84-c01c75f0244d",
+            "slug": "lake-qarun",
+            "name_en": "Lake Qarun",
+            "name_ar": "بحيرة قارون",
+            "description_en": "An ancient saltwater lake rich in birdlife and lakeside retreats.",
+            "description_ar": "بحيرة مالحة قديمة غنية بالطيور والمنتجعات على ضفافها في الفيوم.",
+            "subcategory": "lake",
+            "latitude": 29.4667,
+            "longitude": 30.6,
+            "thumbnail_url": "",
+            "rating": null,
+            "entry_fee": "",
+            "opening_hours": "open",
+            "tags": [
+                "nature",
+                "birds",
+                "lake"
+            ],
+            "city_uuid": "d04492aa-f9e2-59e7-8c80-6057f961da1c",
+            "city_slug": "fayoum",
+            "category_uuids": [
+                "87ed155a-b2a4-51b8-b652-eaca5c478960"
+            ],
+            "category_slugs": [
+                "natural"
+            ]
+        },
+        {
+            "uuid": "0d550d83-3ca1-5434-beb7-d189b69c71c9",
+            "slug": "luxor-museum",
+            "name_en": "Luxor Museum",
+            "name_ar": "متحف الأقصر",
+            "description_en": "A refined museum of Theban art and royal mummies along the Nile Corniche.",
+            "description_ar": "متحف أنيق للفن الطيبي والمومياوات الملكية على كورنيش النيل بالأقصر.",
+            "subcategory": "archaeology",
+            "latitude": 25.7066,
+            "longitude": 32.6433,
+            "thumbnail_url": "",
+            "rating": null,
+            "entry_fee": "",
+            "opening_hours": "09:00-22:00",
+            "tags": [
+                "museum",
+                "mummies"
+            ],
+            "city_uuid": "b38fc0bd-62fc-5a95-907e-c8ada6066442",
+            "city_slug": "luxor",
+            "category_uuids": [
+                "07a68533-1b85-5420-a33a-206cfc44fd3f"
+            ],
+            "category_slugs": [
+                "museum"
+            ]
+        },
+        {
+            "uuid": "66d31e14-232e-53f1-960f-41e965a85454",
+            "slug": "luxor-temple",
+            "name_en": "Luxor Temple",
+            "name_ar": "معبد الأقصر",
+            "description_en": "A magnificent riverside temple, stunning when illuminated at night.",
+            "description_ar": "معبد رائع على ضفة النيل، يبدو ساحرًا حين يُضاء ليلًا.",
+            "subcategory": "ancient",
+            "latitude": 25.6997,
+            "longitude": 32.6391,
+            "thumbnail_url": "",
+            "rating": null,
+            "entry_fee": "",
+            "opening_hours": "06:00-22:00",
+            "tags": [
+                "UNESCO",
+                "ancient egypt",
+                "night visit"
+            ],
+            "city_uuid": "b38fc0bd-62fc-5a95-907e-c8ada6066442",
+            "city_slug": "luxor",
+            "category_uuids": [
+                "bb388635-2879-5381-81fe-81cc23913a07"
+            ],
+            "category_slugs": [
+                "temple"
+            ]
+        },
+        {
+            "uuid": "2436bd6c-97a9-5de4-b092-cb43fb9cd42e",
+            "slug": "manial-palace",
+            "name_en": "Manial Palace Museum",
+            "name_ar": "قصر محمد علي بالمنيل",
+            "description_en": "A lavish royal palace blending Ottoman, Moorish, and Persian styles on Rhoda Island.",
+            "description_ar": "قصر ملكي فخم يمزج الطرز العثمانية والمغربية والفارسية في جزيرة الروضة.",
+            "subcategory": "palace",
+            "latitude": 30.0228,
+            "longitude": 31.2289,
+            "thumbnail_url": "",
+            "rating": null,
+            "entry_fee": "",
+            "opening_hours": "09:00-16:00",
+            "tags": [
+                "palace",
+                "royal",
+                "gardens"
+            ],
+            "city_uuid": "704a6de7-3eaf-5f35-a22c-d65dcef20299",
+            "city_slug": "cairo",
+            "category_uuids": [
+                "07a68533-1b85-5420-a33a-206cfc44fd3f"
+            ],
+            "category_slugs": [
+                "museum"
+            ]
+        },
+        {
+            "uuid": "d36c9eb8-f55e-5e36-b8da-6321cca804dc",
+            "slug": "medinet-habu",
+            "name_en": "Medinet Habu",
+            "name_ar": "مدينة هابو",
+            "description_en": "The exceptionally well-preserved mortuary temple of Ramesses III with vivid reliefs.",
+            "description_ar": "معبد رمسيس الثالث الجنائزي المحفوظ بشكل استثنائي بنقوشه الزاهية.",
+            "subcategory": "mortuary",
+            "latitude": 25.7193,
+            "longitude": 32.6005,
+            "thumbnail_url": "",
+            "rating": null,
+            "entry_fee": "",
+            "opening_hours": "06:00-17:00",
+            "tags": [
+                "ancient egypt",
+                "hidden gem"
+            ],
+            "city_uuid": "b38fc0bd-62fc-5a95-907e-c8ada6066442",
+            "city_slug": "luxor",
+            "category_uuids": [
+                "bb388635-2879-5381-81fe-81cc23913a07"
+            ],
+            "category_slugs": [
+                "temple"
+            ]
+        },
+        {
+            "uuid": "f9f38cf4-2028-5d61-84ab-4ea90cfe8bf2",
+            "slug": "memphis",
+            "name_en": "Memphis Open-Air Museum",
+            "name_ar": "متحف ميت رهينة",
+            "description_en": "Ruins of Egypt's ancient capital, home to a giant fallen statue of Ramesses II.",
+            "description_ar": "متحف مفتوح يضم أطلال عاصمة مصر القديمة وتمثالًا ضخمًا ساقطًا لرمسيس الثاني.",
+            "subcategory": "open_air",
+            "latitude": 29.8497,
+            "longitude": 31.2549,
+            "thumbnail_url": "",
+            "rating": null,
+            "entry_fee": "80 EGP",
+            "opening_hours": "08:00-16:00",
+            "tags": [
+                "ancient egypt",
+                "history"
+            ],
+            "city_uuid": "c004570d-c346-51ee-8187-51345de11973",
+            "city_slug": "mit-rahina",
+            "category_uuids": [
+                "07a68533-1b85-5420-a33a-206cfc44fd3f"
+            ],
+            "category_slugs": [
+                "museum"
+            ]
+        },
+        {
+            "uuid": "385c85a1-fa20-5f5e-a94d-e6357d3461fa",
+            "slug": "st-anthony",
+            "name_en": "Monastery of St. Anthony",
+            "name_ar": "دير الأنبا أنطونيوس",
+            "description_en": "The world's oldest Christian monastery, founded in the 4th century in the Eastern Desert.",
+            "description_ar": "أقدم دير مسيحي في العالم، تأسس في القرن الرابع بالصحراء الشرقية.",
+            "subcategory": "monastery",
+            "latitude": 28.9166,
+            "longitude": 32.354,
+            "thumbnail_url": "",
+            "rating": null,
+            "entry_fee": "",
+            "opening_hours": "09:00-17:00",
+            "tags": [
+                "coptic",
+                "christian",
+                "oldest",
+                "spiritual"
+            ],
+            "city_uuid": "fecdcd0a-9acd-517f-8ac7-a9609339f2d7",
+            "city_slug": "red-sea",
+            "category_uuids": [
+                "07ccd304-7da4-561e-a87d-ffbba4452b61"
+            ],
+            "category_slugs": [
+                "historic-site"
+            ]
+        },
+        {
+            "uuid": "30a0b0da-e563-5a3b-b6e4-38a5b0d51fd0",
+            "slug": "st-paul",
+            "name_en": "Monastery of St. Paul",
+            "name_ar": "دير الأنبا بولا",
+            "description_en": "A remote desert monastery built around the cave of St. Paul the Hermit.",
+            "description_ar": "دير صحراوي منعزل بُني حول كهف القديس بولا الناسك.",
+            "subcategory": "monastery",
+            "latitude": 28.8497,
+            "longitude": 32.5536,
+            "thumbnail_url": "",
+            "rating": null,
+            "entry_fee": "",
+            "opening_hours": "09:00-17:00",
+            "tags": [
+                "coptic",
+                "christian",
+                "spiritual",
+                "remote"
+            ],
+            "city_uuid": "fecdcd0a-9acd-517f-8ac7-a9609339f2d7",
+            "city_slug": "red-sea",
+            "category_uuids": [
+                "07ccd304-7da4-561e-a87d-ffbba4452b61"
+            ],
+            "category_slugs": [
+                "historic-site"
+            ]
+        },
+        {
+            "uuid": "4ede4e39-47eb-5e80-9013-7e4ef640331e",
+            "slug": "montaza",
+            "name_en": "Montaza Palace & Gardens",
+            "name_ar": "قصر المنتزه",
+            "description_en": "Royal palace set in lush seaside gardens on Alexandria's eastern shore.",
+            "description_ar": "قصر ملكي تحيط به حدائق غنّاء على شاطئ الإسكندرية الشرقي.",
+            "subcategory": "palace",
+            "latitude": 31.2886,
+            "longitude": 30.0156,
+            "thumbnail_url": "",
+            "rating": null,
+            "entry_fee": "",
+            "opening_hours": "08:00-sunset",
+            "tags": [
+                "palace",
+                "gardens",
+                "sea"
+            ],
+            "city_uuid": "5f0a14dd-db1f-5cfe-be34-e17472e2c470",
+            "city_slug": "alexandria",
+            "category_uuids": [
+                "092d3f99-82b9-500f-960d-d30089fa8fe5"
+            ],
+            "category_slugs": [
+                "attraction"
+            ]
+        },
+        {
+            "uuid": "56c0f136-0092-513f-8dfe-621345bf2c2f",
+            "slug": "ibn-tulun",
+            "name_en": "Mosque of Ibn Tulun",
+            "name_ar": "مسجد ابن طولون",
+            "description_en": "Cairo's oldest intact mosque (879 AD), famed for its spiral minaret.",
+            "description_ar": "أقدم مسجد قائم بحالته الأصلية في القاهرة (879م)، يشتهر بمئذنته الملوية.",
+            "subcategory": "historic",
+            "latitude": 30.0288,
+            "longitude": 31.2497,
+            "thumbnail_url": "",
+            "rating": null,
+            "entry_fee": "",
+            "opening_hours": "08:00-17:00",
+            "tags": [
+                "islamic",
+                "oldest",
+                "architecture"
+            ],
+            "city_uuid": "704a6de7-3eaf-5f35-a22c-d65dcef20299",
+            "city_slug": "cairo",
+            "category_uuids": [
+                "977adfb7-4557-56e6-afdb-96f70979f82a"
+            ],
+            "category_slugs": [
+                "mosque"
+            ]
+        },
+        {
+            "uuid": "a686111b-8e76-5803-9994-a88f7cc5b534",
+            "slug": "muhammad-ali-mosque",
+            "name_en": "Mosque of Muhammad Ali",
+            "name_ar": "مسجد محمد علي",
+            "description_en": "The 'Alabaster Mosque' atop the Citadel, an icon of Cairo's skyline.",
+            "description_ar": "«مسجد المرمر» المتوّج للقلعة، وأحد أبرز معالم أفق القاهرة.",
+            "subcategory": "ottoman",
+            "latitude": 30.0287,
+            "longitude": 31.236,
+            "thumbnail_url": "",
+            "rating": null,
+            "entry_fee": "",
+            "opening_hours": "08:00-17:00",
+            "tags": [
+                "islamic",
+                "ottoman",
+                "iconic"
+            ],
+            "city_uuid": "704a6de7-3eaf-5f35-a22c-d65dcef20299",
+            "city_slug": "cairo",
+            "category_uuids": [
+                "977adfb7-4557-56e6-afdb-96f70979f82a"
+            ],
+            "category_slugs": [
+                "mosque"
+            ]
+        },
+        {
+            "uuid": "724e22b2-daaa-5996-b356-aaa26be21795",
+            "slug": "sultan-hassan",
+            "name_en": "Mosque-Madrassa of Sultan Hassan",
+            "name_ar": "مسجد ومدرسة السلطان حسن",
+            "description_en": "A monumental 14th-century Mamluk mosque and school, a masterpiece of Islamic architecture.",
+            "description_ar": "مسجد ومدرسة مملوكي ضخم من القرن الرابع عشر، تحفة في العمارة الإسلامية.",
+            "subcategory": "mamluk",
+            "latitude": 30.0324,
+            "longitude": 31.2562,
+            "thumbnail_url": "",
+            "rating": null,
+            "entry_fee": "",
+            "opening_hours": "08:00-17:00",
+            "tags": [
+                "islamic",
+                "mamluk",
+                "architecture"
+            ],
+            "city_uuid": "704a6de7-3eaf-5f35-a22c-d65dcef20299",
+            "city_slug": "cairo",
+            "category_uuids": [
+                "977adfb7-4557-56e6-afdb-96f70979f82a"
+            ],
+            "category_slugs": [
+                "mosque"
+            ]
+        },
+        {
+            "uuid": "7220b3e0-92a4-57cd-93c9-0bb926eaa3c3",
+            "slug": "mount-sinai",
+            "name_en": "Mount Sinai",
+            "name_ar": "جبل موسى",
+            "description_en": "The sacred mountain of Moses, famous for its sunrise summit hike.",
+            "description_ar": "جبل موسى المقدس، يشتهر برحلة تسلّق قمته لمشاهدة شروق الشمس.",
+            "subcategory": "mountain",
+            "latitude": 28.5392,
+            "longitude": 33.9733,
+            "thumbnail_url": "",
+            "rating": null,
+            "entry_fee": "",
+            "opening_hours": "",
+            "tags": [
+                "hiking",
+                "spiritual",
+                "sunrise",
+                "views"
+            ],
+            "city_uuid": "7a9e842a-b147-54ed-83c3-456dd65173e2",
+            "city_slug": "saint-catherine",
+            "category_uuids": [
+                "87ed155a-b2a4-51b8-b652-eaca5c478960"
+            ],
+            "category_slugs": [
+                "natural"
+            ]
+        },
+        {
+            "uuid": "ddb54a6a-1dc0-5ed0-b157-14b5ed5612af",
+            "slug": "naama-bay",
+            "name_en": "Naama Bay",
+            "name_ar": "خليج نعمة",
+            "description_en": "Sharm El Sheikh's vibrant beachfront promenade of resorts, dining, and nightlife.",
+            "description_ar": "ممشى شرم الشيخ النابض بالحياة بالمنتجعات والمطاعم والحياة الليلية.",
+            "subcategory": "resort",
+            "latitude": 27.9097,
+            "longitude": 34.33,
+            "thumbnail_url": "",
+            "rating": null,
+            "entry_fee": "",
+            "opening_hours": "open",
+            "tags": [
+                "beach",
+                "nightlife",
+                "resort"
+            ],
+            "city_uuid": "7db951b7-3fb4-5e9e-9907-c3802d0bb070",
+            "city_slug": "sharm-el-sheikh",
+            "category_uuids": [
+                "092d3f99-82b9-500f-960d-d30089fa8fe5"
+            ],
+            "category_slugs": [
+                "attraction"
+            ]
+        },
+        {
+            "uuid": "f412af80-664d-5881-90f3-db4823d58a57",
+            "slug": "nmec",
+            "name_en": "National Museum of Egyptian Civilization",
+            "name_ar": "المتحف القومي للحضارة",
+            "description_en": "Home of the Royal Mummies Hall, tracing Egyptian civilization from prehistory to today.",
+            "description_ar": "المتحف القومي للحضارة، موطن قاعة المومياوات الملكية، يؤرّخ للحضارة المصرية عبر العصور.",
+            "subcategory": "civilization",
+            "latitude": 30.0061,
+            "longitude": 31.253,
+            "thumbnail_url": "",
+            "rating": null,
+            "entry_fee": "",
+            "opening_hours": "09:00-17:00",
+            "tags": [
+                "mummies",
+                "modern",
+                "must-visit"
+            ],
+            "city_uuid": "704a6de7-3eaf-5f35-a22c-d65dcef20299",
+            "city_slug": "cairo",
+            "category_uuids": [
+                "07a68533-1b85-5420-a33a-206cfc44fd3f"
+            ],
+            "category_slugs": [
+                "museum"
+            ]
+        },
+        {
+            "uuid": "a2ecc3a5-4002-562a-bfec-5e7f83824d03",
+            "slug": "nubian-museum",
+            "name_en": "Nubian Museum",
+            "name_ar": "متحف النوبة",
+            "description_en": "An award-winning museum celebrating Nubian history and culture.",
+            "description_ar": "متحف حائز على جوائز يحتفي بتاريخ النوبة وحضارتها وثقافتها.",
+            "subcategory": "civilization",
+            "latitude": 24.0792,
+            "longitude": 32.8897,
+            "thumbnail_url": "",
+            "rating": null,
+            "entry_fee": "",
+            "opening_hours": "09:00-17:00",
+            "tags": [
+                "museum",
+                "nubian",
+                "culture"
+            ],
+            "city_uuid": "c56842e6-1006-594a-9a71-a549dbfb554d",
+            "city_slug": "aswan",
+            "category_uuids": [
+                "07a68533-1b85-5420-a33a-206cfc44fd3f"
+            ],
+            "category_slugs": [
+                "museum"
+            ]
+        },
+        {
+            "uuid": "d98e94dd-96ec-523d-b9b6-b76a24b97c83",
+            "slug": "philae",
+            "name_en": "Philae Temple (Isis)",
+            "name_ar": "معبد فيلة",
+            "description_en": "An island temple to the goddess Isis, reached by boat across the Nile.",
+            "description_ar": "معبد على جزيرة مخصص للإلهة إيزيس، يُزار عبر قارب على نهر النيل.",
+            "subcategory": "ancient",
+            "latitude": 24.0253,
+            "longitude": 32.8843,
+            "thumbnail_url": "",
+            "rating": null,
+            "entry_fee": "",
+            "opening_hours": "07:00-16:00",
+            "tags": [
+                "UNESCO",
+                "ancient egypt",
+                "island",
+                "boat"
+            ],
+            "city_uuid": "c56842e6-1006-594a-9a71-a549dbfb554d",
+            "city_slug": "aswan",
+            "category_uuids": [
+                "bb388635-2879-5381-81fe-81cc23913a07"
+            ],
+            "category_slugs": [
+                "temple"
+            ]
+        },
+        {
+            "uuid": "4646e595-3572-5d65-a346-5daaa9bfa660",
+            "slug": "pompey-pillar",
+            "name_en": "Pompey's Pillar",
+            "name_ar": "عمود السواري",
+            "description_en": "A towering Roman triumphal column with sphinxes, beside the Serapeum ruins.",
+            "description_ar": "عمود روماني ضخم محاط بتماثيل أبو الهول بجوار أطلال معبد السيرابيوم بالإسكندرية.",
+            "subcategory": "column",
+            "latitude": 31.1825,
+            "longitude": 29.8967,
+            "thumbnail_url": "",
+            "rating": null,
+            "entry_fee": "",
+            "opening_hours": "09:00-16:30",
+            "tags": [
+                "roman",
+                "ancient"
+            ],
+            "city_uuid": "5f0a14dd-db1f-5cfe-be34-e17472e2c470",
+            "city_slug": "alexandria",
+            "category_uuids": [
+                "ead5be27-7146-5c31-851f-8cfb68ed19be"
+            ],
+            "category_slugs": [
+                "ancient-monument"
+            ]
+        },
+        {
+            "uuid": "5f8a2738-848a-5994-9cd1-1e7a1d5c4489",
+            "slug": "giza-pyramids",
+            "name_en": "Pyramids of Giza",
+            "name_ar": "أهرامات الجيزة",
+            "description_en": "The only surviving wonder of the ancient world — the pyramids of Khufu, Khafre, and Menkaure on the Giza plateau.",
+            "description_ar": "الأعجوبة الوحيدة الباقية من عجائب العالم القديم: أهرامات خوفو وخفرع ومنقرع.",
+            "subcategory": "pyramid",
+            "latitude": 29.9792,
+            "longitude": 31.1342,
+            "thumbnail_url": "",
+            "rating": null,
+            "entry_fee": "540 EGP",
+            "opening_hours": "07:00-17:00",
+            "tags": [
+                "UNESCO",
+                "ancient egypt",
+                "must-visit",
+                "iconic"
+            ],
+            "city_uuid": "5e101a45-9114-5a16-b749-5e19b2b27a71",
+            "city_slug": "giza",
+            "category_uuids": [
+                "ead5be27-7146-5c31-851f-8cfb68ed19be"
+            ],
+            "category_slugs": [
+                "ancient-monument"
+            ]
+        },
+        {
+            "uuid": "9ee4fba1-5921-5dff-939b-378468ea2c7b",
+            "slug": "ras-muhammad",
+            "name_en": "Ras Muhammad National Park",
+            "name_ar": "محمية رأس محمد",
+            "description_en": "Egypt's premier marine reserve with world-class coral reefs and diving.",
+            "description_ar": "أهم محمية بحرية في مصر بشعابها المرجانية ومواقع الغوص العالمية.",
+            "subcategory": "marine_park",
+            "latitude": 27.7269,
+            "longitude": 34.2569,
+            "thumbnail_url": "",
+            "rating": null,
+            "entry_fee": "",
+            "opening_hours": "08:00-17:00",
+            "tags": [
+                "diving",
+                "snorkeling",
+                "nature",
+                "red sea"
+            ],
+            "city_uuid": "7db951b7-3fb4-5e9e-9907-c3802d0bb070",
+            "city_slug": "sharm-el-sheikh",
+            "category_uuids": [
+                "87ed155a-b2a4-51b8-b652-eaca5c478960"
+            ],
+            "category_slugs": [
+                "natural"
+            ]
+        },
+        {
+            "uuid": "6d92dde6-0179-53cd-b0ad-0e8b334f000a",
+            "slug": "roman-theatre",
+            "name_en": "Roman Amphitheatre (Kom el-Dikka)",
+            "name_ar": "المسرح الروماني",
+            "description_en": "The only Roman amphitheatre in Egypt, with marble terraces and mosaics.",
+            "description_ar": "المسرح الروماني الوحيد في مصر، يتميز بمدرجاته الرخامية وأرضياته الفسيفسائية.",
+            "subcategory": "theatre",
+            "latitude": 31.1953,
+            "longitude": 29.905,
+            "thumbnail_url": "",
+            "rating": null,
+            "entry_fee": "",
+            "opening_hours": "09:00-16:30",
+            "tags": [
+                "roman",
+                "ancient"
+            ],
+            "city_uuid": "5f0a14dd-db1f-5cfe-be34-e17472e2c470",
+            "city_slug": "alexandria",
+            "category_uuids": [
+                "ead5be27-7146-5c31-851f-8cfb68ed19be"
+            ],
+            "category_slugs": [
+                "ancient-monument"
+            ]
+        },
+        {
+            "uuid": "a3c496a6-add3-5dc7-9d6f-3587bf5fe378",
+            "slug": "st-catherine",
+            "name_en": "Saint Catherine's Monastery",
+            "name_ar": "دير سانت كاترين",
+            "description_en": "One of the world's oldest active monasteries, at the foot of Mount Sinai.",
+            "description_ar": "أحد أقدم الأديرة العاملة في العالم، عند سفح جبل موسى.",
+            "subcategory": "monastery",
+            "latitude": 28.5558,
+            "longitude": 33.9756,
+            "thumbnail_url": "",
+            "rating": null,
+            "entry_fee": "",
+            "opening_hours": "09:00-12:00",
+            "tags": [
+                "UNESCO",
+                "christian",
+                "spiritual",
+                "must-visit"
+            ],
+            "city_uuid": "7a9e842a-b147-54ed-83c3-456dd65173e2",
+            "city_slug": "saint-catherine",
+            "category_uuids": [
+                "07ccd304-7da4-561e-a87d-ffbba4452b61"
+            ],
+            "category_slugs": [
+                "historic-site"
+            ]
+        },
+        {
+            "uuid": "8e208db0-852c-5300-8f50-44c73e00d67d",
+            "slug": "citadel",
+            "name_en": "Saladin Citadel",
+            "name_ar": "قلعة صلاح الدين",
+            "description_en": "Medieval Islamic fortress crowning Cairo, with panoramic city views.",
+            "description_ar": "قلعة إسلامية من العصور الوسطى تتوّج القاهرة وتطل عليها بمناظر بانورامية.",
+            "subcategory": "fortress",
+            "latitude": 30.0287,
+            "longitude": 31.2599,
+            "thumbnail_url": "",
+            "rating": null,
+            "entry_fee": "",
+            "opening_hours": "08:00-17:00",
+            "tags": [
+                "islamic",
+                "fortress",
+                "views",
+                "must-visit"
+            ],
+            "city_uuid": "704a6de7-3eaf-5f35-a22c-d65dcef20299",
+            "city_slug": "cairo",
+            "category_uuids": [
+                "07ccd304-7da4-561e-a87d-ffbba4452b61"
+            ],
+            "category_slugs": [
+                "historic-site"
+            ]
+        },
+        {
+            "uuid": "92d1eea1-1509-55a5-b432-94d91a9669d2",
+            "slug": "shali",
+            "name_en": "Shali Fortress (Siwa)",
+            "name_ar": "قلعة شالي",
+            "description_en": "The eroded mudbrick old town of Siwa, glowing gold at sunset.",
+            "description_ar": "بلدة سيوة القديمة المبنية من الطوب الطيني، تتوهّج ذهبيًا عند الغروب.",
+            "subcategory": "fortress",
+            "latitude": 29.2031,
+            "longitude": 25.5197,
+            "thumbnail_url": "",
+            "rating": null,
+            "entry_fee": "",
+            "opening_hours": "open",
+            "tags": [
+                "heritage",
+                "oasis",
+                "sunset"
+            ],
+            "city_uuid": "fb6fa1cd-f20e-59b8-978b-b4c10ac18333",
+            "city_slug": "siwa",
+            "category_uuids": [
+                "07ccd304-7da4-561e-a87d-ffbba4452b61"
+            ],
+            "category_slugs": [
+                "historic-site"
+            ]
+        },
+        {
+            "uuid": "af9ded89-29d4-5247-b967-e89fa6cd999c",
+            "slug": "saqqara",
+            "name_en": "Step Pyramid of Djoser (Saqqara)",
+            "name_ar": "هرم زوسر المدرج",
+            "description_en": "The world's oldest stone pyramid and the vast Saqqara necropolis of ancient Memphis.",
+            "description_ar": "أقدم هرم حجري في العالم وجبّانة سقارة الواسعة لعاصمة منف القديمة.",
+            "subcategory": "pyramid",
+            "latitude": 29.8711,
+            "longitude": 31.2165,
+            "thumbnail_url": "",
+            "rating": null,
+            "entry_fee": "200 EGP",
+            "opening_hours": "08:00-16:00",
+            "tags": [
+                "UNESCO",
+                "ancient egypt",
+                "oldest"
+            ],
+            "city_uuid": "35f80850-4828-520e-b0e4-f164e4669eaa",
+            "city_slug": "saqqara",
+            "category_uuids": [
+                "ead5be27-7146-5c31-851f-8cfb68ed19be"
+            ],
+            "category_slugs": [
+                "ancient-monument"
+            ]
+        },
+        {
+            "uuid": "cb4057d6-4339-5b93-982a-7ba90049aca9",
+            "slug": "suez-canal",
+            "name_en": "Suez Canal",
+            "name_ar": "قناة السويس",
+            "description_en": "One of the world's most important waterways linking the Mediterranean and Red Sea.",
+            "description_ar": "أحد أهم الممرات المائية في العالم، يربط البحر المتوسط بالبحر الأحمر.",
+            "subcategory": "landmark",
+            "latitude": 30.5852,
+            "longitude": 32.2654,
+            "thumbnail_url": "",
+            "rating": null,
+            "entry_fee": "",
+            "opening_hours": "open",
+            "tags": [
+                "engineering",
+                "modern",
+                "ships"
+            ],
+            "city_uuid": "2be32625-2a8f-586f-b84d-498cbf48c410",
+            "city_slug": "ismailia",
+            "category_uuids": [
+                "092d3f99-82b9-500f-960d-d30089fa8fe5"
+            ],
+            "category_slugs": [
+                "attraction"
+            ]
+        },
+        {
+            "uuid": "1b645ee9-586b-5f8c-b6cf-c8e924c8fcc1",
+            "slug": "hatshepsut",
+            "name_en": "Temple of Hatshepsut (Deir el-Bahari)",
+            "name_ar": "معبد حتشبسوت",
+            "description_en": "The dramatic terraced mortuary temple of Egypt's most famous female pharaoh.",
+            "description_ar": "المعبد الجنائزي المدرّج المهيب لأشهر ملكات مصر، حتشبسوت.",
+            "subcategory": "mortuary",
+            "latitude": 25.738,
+            "longitude": 32.6065,
+            "thumbnail_url": "",
+            "rating": null,
+            "entry_fee": "",
+            "opening_hours": "06:00-17:00",
+            "tags": [
+                "ancient egypt",
+                "architecture",
+                "iconic"
+            ],
+            "city_uuid": "b38fc0bd-62fc-5a95-907e-c8ada6066442",
+            "city_slug": "luxor",
+            "category_uuids": [
+                "bb388635-2879-5381-81fe-81cc23913a07"
+            ],
+            "category_slugs": [
+                "temple"
+            ]
+        },
+        {
+            "uuid": "e3c93907-eb5c-5c50-8398-6165191264de",
+            "slug": "edfu",
+            "name_en": "Temple of Horus (Edfu)",
+            "name_ar": "معبد إدفو",
+            "description_en": "The best-preserved ancient temple in Egypt, dedicated to the falcon god Horus.",
+            "description_ar": "أفضل المعابد المصرية القديمة حفظًا، وهو مخصص للإله الصقر حورس.",
+            "subcategory": "ancient",
+            "latitude": 24.9777,
+            "longitude": 32.8735,
+            "thumbnail_url": "",
+            "rating": null,
+            "entry_fee": "",
+            "opening_hours": "07:00-16:00",
+            "tags": [
+                "ancient egypt",
+                "well-preserved",
+                "nile cruise"
+            ],
+            "city_uuid": "a2d05696-eeb3-5667-840c-31156fc76baa",
+            "city_slug": "edfu",
+            "category_uuids": [
+                "bb388635-2879-5381-81fe-81cc23913a07"
+            ],
+            "category_slugs": [
+                "temple"
+            ]
+        },
+        {
+            "uuid": "55c2e10f-bb86-5ed8-86fd-b93fee1815a7",
+            "slug": "philae-kalabsha",
+            "name_en": "Temple of Kalabsha",
+            "name_ar": "معبد كلابشة",
+            "description_en": "A Greco-Roman temple relocated near the High Dam, dedicated to the god Mandulis.",
+            "description_ar": "معبد من العصر اليوناني الروماني نُقل قرب السد العالي وكُرّس للإله ماندوليس.",
+            "subcategory": "ancient",
+            "latitude": 23.9628,
+            "longitude": 32.865,
+            "thumbnail_url": "",
+            "rating": null,
+            "entry_fee": "",
+            "opening_hours": "08:00-16:00",
+            "tags": [
+                "ancient egypt",
+                "hidden gem"
+            ],
+            "city_uuid": "c56842e6-1006-594a-9a71-a549dbfb554d",
+            "city_slug": "aswan",
+            "category_uuids": [
+                "bb388635-2879-5381-81fe-81cc23913a07"
+            ],
+            "category_slugs": [
+                "temple"
+            ]
+        },
+        {
+            "uuid": "50584572-6e3d-5f1b-afd4-66927e7fef39",
+            "slug": "esna",
+            "name_en": "Temple of Khnum (Esna)",
+            "name_ar": "معبد إسنا",
+            "description_en": "A Greco-Roman temple with a richly decorated, recently restored hypostyle hall.",
+            "description_ar": "معبد من العصر اليوناني الروماني بصالة أعمدة غنية بالزخارف رُمّمت حديثًا.",
+            "subcategory": "ancient",
+            "latitude": 25.2933,
+            "longitude": 32.5536,
+            "thumbnail_url": "",
+            "rating": null,
+            "entry_fee": "",
+            "opening_hours": "07:00-16:00",
+            "tags": [
+                "ancient egypt",
+                "reliefs",
+                "hidden gem"
+            ],
+            "city_uuid": "8549eaca-3331-5853-8a4e-e98433ce4dd7",
+            "city_slug": "esna",
+            "category_uuids": [
+                "bb388635-2879-5381-81fe-81cc23913a07"
+            ],
+            "category_slugs": [
+                "temple"
+            ]
+        },
+        {
+            "uuid": "c389691f-8a79-55e6-bd14-ef6238987aa8",
+            "slug": "abydos",
+            "name_en": "Temple of Seti I (Abydos)",
+            "name_ar": "معبد سيتي الأول بأبيدوس",
+            "description_en": "Sacred temple famed for the 'Abydos King List' and exquisite carved reliefs.",
+            "description_ar": "معبد سيتي الأول المقدّس، يشتهر بـ«قائمة ملوك أبيدوس» ونقوشه البديعة.",
+            "subcategory": "ancient",
+            "latitude": 26.1849,
+            "longitude": 31.9192,
+            "thumbnail_url": "",
+            "rating": null,
+            "entry_fee": "",
+            "opening_hours": "08:00-17:00",
+            "tags": [
+                "ancient egypt",
+                "sacred",
+                "reliefs"
+            ],
+            "city_uuid": "da68333f-232a-5b03-9f4a-63e96d626a42",
+            "city_slug": "sohag",
+            "category_uuids": [
+                "bb388635-2879-5381-81fe-81cc23913a07"
+            ],
+            "category_slugs": [
+                "temple"
+            ]
+        },
+        {
+            "uuid": "6b0bdeeb-0cd3-5d6e-9a7e-2cf4c2052973",
+            "slug": "siwa-oracle",
+            "name_en": "Temple of the Oracle (Siwa)",
+            "name_ar": "معبد التنبؤات",
+            "description_en": "The ancient oracle temple famously consulted by Alexander the Great.",
+            "description_ar": "معبد الوحي القديم الذي استشاره الإسكندر الأكبر في رحلته الشهيرة.",
+            "subcategory": "ancient",
+            "latitude": 29.203,
+            "longitude": 25.5197,
+            "thumbnail_url": "",
+            "rating": null,
+            "entry_fee": "",
+            "opening_hours": "08:00-17:00",
+            "tags": [
+                "ancient",
+                "oasis",
+                "hidden gem"
+            ],
+            "city_uuid": "fb6fa1cd-f20e-59b8-978b-b4c10ac18333",
+            "city_slug": "siwa",
+            "category_uuids": [
+                "bb388635-2879-5381-81fe-81cc23913a07"
+            ],
+            "category_slugs": [
+                "temple"
+            ]
+        },
+        {
+            "uuid": "584d7380-ced0-5c27-80b2-f66e68ccdd61",
+            "slug": "hanging-church",
+            "name_en": "The Hanging Church",
+            "name_ar": "الكنيسة المعلقة",
+            "description_en": "One of Cairo's oldest Coptic churches, suspended over a Roman gatehouse.",
+            "description_ar": "من أقدم كنائس القاهرة القبطية، معلّقة فوق بوابة رومانية قديمة.",
+            "subcategory": "coptic",
+            "latitude": 30.0054,
+            "longitude": 31.23,
+            "thumbnail_url": "",
+            "rating": null,
+            "entry_fee": "",
+            "opening_hours": "09:00-16:00",
+            "tags": [
+                "coptic",
+                "christian",
+                "historic"
+            ],
+            "city_uuid": "704a6de7-3eaf-5f35-a22c-d65dcef20299",
+            "city_slug": "cairo",
+            "category_uuids": [
+                "54cc1b17-c1f1-55d1-976a-7a195ef73b8d"
+            ],
+            "category_slugs": [
+                "church"
+            ]
+        },
+        {
+            "uuid": "b3884798-da53-5800-ac7c-70b7ab8613be",
+            "slug": "tunis-village",
+            "name_en": "Tunis Village",
+            "name_ar": "قرية تونس",
+            "description_en": "An artsy pottery village above Lake Qarun, known for ceramics and tranquility.",
+            "description_ar": "قرية فنية للفخار تطل على بحيرة قارون، تشتهر بالخزف والهدوء.",
+            "subcategory": "village",
+            "latitude": 29.403,
+            "longitude": 30.4419,
+            "thumbnail_url": "",
+            "rating": null,
+            "entry_fee": "",
+            "opening_hours": "open",
+            "tags": [
+                "crafts",
+                "relaxed",
+                "village"
+            ],
+            "city_uuid": "d04492aa-f9e2-59e7-8c80-6057f961da1c",
+            "city_slug": "fayoum",
+            "category_uuids": [
+                "092d3f99-82b9-500f-960d-d30089fa8fe5"
+            ],
+            "category_slugs": [
+                "attraction"
+            ]
+        },
+        {
+            "uuid": "ba7c8586-f665-52e2-83ad-9ee606a47d3f",
+            "slug": "unfinished-obelisk",
+            "name_en": "Unfinished Obelisk",
+            "name_ar": "المسلة الناقصة",
+            "description_en": "A giant abandoned obelisk still attached to bedrock, revealing ancient quarrying methods.",
+            "description_ar": "مسلة عملاقة لم يكتمل نحتها وما زالت ملتصقة بالصخر، تكشف أساليب المحاجر القديمة.",
+            "subcategory": "quarry",
+            "latitude": 24.0775,
+            "longitude": 32.8957,
+            "thumbnail_url": "",
+            "rating": null,
+            "entry_fee": "",
+            "opening_hours": "07:00-16:00",
+            "tags": [
+                "ancient egypt",
+                "unusual"
+            ],
+            "city_uuid": "c56842e6-1006-594a-9a71-a549dbfb554d",
+            "city_slug": "aswan",
+            "category_uuids": [
+                "ead5be27-7146-5c31-851f-8cfb68ed19be"
+            ],
+            "category_slugs": [
+                "ancient-monument"
+            ]
+        },
+        {
+            "uuid": "4fd17b25-2e9a-56fe-af2a-a21ffa698e04",
+            "slug": "valley-kings",
+            "name_en": "Valley of the Kings",
+            "name_ar": "وادي الملوك",
+            "description_en": "Royal burial valley of the New Kingdom pharaohs, including Tutankhamun's tomb.",
+            "description_ar": "وادي الدفن الملكي لفراعنة الدولة الحديثة، ويضم مقبرة توت عنخ آمون.",
+            "subcategory": "necropolis",
+            "latitude": 25.7402,
+            "longitude": 32.6014,
+            "thumbnail_url": "",
+            "rating": null,
+            "entry_fee": "",
+            "opening_hours": "06:00-17:00",
+            "tags": [
+                "UNESCO",
+                "tombs",
+                "tutankhamun",
+                "must-visit"
+            ],
+            "city_uuid": "b38fc0bd-62fc-5a95-907e-c8ada6066442",
+            "city_slug": "luxor",
+            "category_uuids": [
+                "ead5be27-7146-5c31-851f-8cfb68ed19be"
+            ],
+            "category_slugs": [
+                "ancient-monument"
+            ]
+        },
+        {
+            "uuid": "84f60634-e7ec-5912-959a-911104cc93be",
+            "slug": "valley-queens",
+            "name_en": "Valley of the Queens",
+            "name_ar": "وادي الملكات",
+            "description_en": "Burial site of queens and royal children, including the dazzling tomb of Nefertari.",
+            "description_ar": "موقع دفن الملكات والأمراء، ويضم مقبرة نفرتاري الباهرة.",
+            "subcategory": "necropolis",
+            "latitude": 25.7283,
+            "longitude": 32.5936,
+            "thumbnail_url": "",
+            "rating": null,
+            "entry_fee": "",
+            "opening_hours": "06:00-17:00",
+            "tags": [
+                "tombs",
+                "ancient egypt"
+            ],
+            "city_uuid": "b38fc0bd-62fc-5a95-907e-c8ada6066442",
+            "city_slug": "luxor",
+            "category_uuids": [
+                "ead5be27-7146-5c31-851f-8cfb68ed19be"
+            ],
+            "category_slugs": [
+                "ancient-monument"
+            ]
+        },
+        {
+            "uuid": "8ae651d6-bca3-5311-bef0-f0da54ae61b8",
+            "slug": "wadi-hitan",
+            "name_en": "Wadi Al-Hitan (Valley of Whales)",
+            "name_ar": "وادي الحيتان",
+            "description_en": "A UNESCO fossil site preserving the skeletons of prehistoric whales in the desert.",
+            "description_ar": "موقع تراث عالمي يضم هياكل عظمية لحيتان ما قبل التاريخ وسط الصحراء.",
+            "subcategory": "fossil_site",
+            "latitude": 29.2683,
+            "longitude": 30.0419,
+            "thumbnail_url": "",
+            "rating": null,
+            "entry_fee": "",
+            "opening_hours": "08:00-16:00",
+            "tags": [
+                "UNESCO",
+                "fossils",
+                "nature",
+                "unique"
+            ],
+            "city_uuid": "d04492aa-f9e2-59e7-8c80-6057f961da1c",
+            "city_slug": "fayoum",
+            "category_uuids": [
+                "87ed155a-b2a4-51b8-b652-eaca5c478960"
+            ],
+            "category_slugs": [
+                "natural"
+            ]
+        },
+        {
+            "uuid": "7f57a34d-15bd-5e19-9ef6-183ab20135c7",
+            "slug": "wadi-rayan",
+            "name_en": "Wadi El Rayan",
+            "name_ar": "وادي الريان",
+            "description_en": "Egypt's only waterfalls, set among desert lakes and dunes.",
+            "description_ar": "الشلالات الوحيدة في مصر، وسط بحيرات وكثبان رملية صحراوية.",
+            "subcategory": "protected_area",
+            "latitude": 29.1833,
+            "longitude": 30.4167,
+            "thumbnail_url": "",
+            "rating": null,
+            "entry_fee": "",
+            "opening_hours": "08:00-17:00",
+            "tags": [
+                "nature",
+                "waterfalls",
+                "desert"
+            ],
+            "city_uuid": "d04492aa-f9e2-59e7-8c80-6057f961da1c",
+            "city_slug": "fayoum",
+            "category_uuids": [
+                "87ed155a-b2a4-51b8-b652-eaca5c478960"
+            ],
+            "category_slugs": [
+                "natural"
+            ]
+        },
+        {
+            "uuid": "ef019dda-4b78-5e3f-a327-49184df98486",
+            "slug": "white-desert",
+            "name_en": "White Desert National Park",
+            "name_ar": "الصحراء البيضاء",
+            "description_en": "Surreal chalk-white rock formations sculpted by wind — a magical camping spot.",
+            "description_ar": "تكوينات صخرية بيضاء سريالية نحتتها الرياح، ومكان ساحر للتخييم.",
+            "subcategory": "desert",
+            "latitude": 27.3,
+            "longitude": 28.2167,
+            "thumbnail_url": "",
+            "rating": null,
+            "entry_fee": "",
+            "opening_hours": "",
+            "tags": [
+                "desert",
+                "camping",
+                "nature",
+                "unique"
+            ],
+            "city_uuid": "c0cd8bc4-fb7a-567c-9cf6-0166c3bca710",
+            "city_slug": "farafra",
+            "category_uuids": [
+                "87ed155a-b2a4-51b8-b652-eaca5c478960"
+            ],
+            "category_slugs": [
+                "natural"
+            ]
+        }
+    ]
+}
