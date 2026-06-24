@@ -1,161 +1,219 @@
-# Heritage Hub API — Contract Documentation
+# Heritage Hub — Consolidated API Contract
 
-## Overview
+> Single source of truth for every endpoint across the Heritage Hub application, reconciled with the locked ADRs. All paths are relative to `{{baseUrl}}`. 
+  
 
-A REST API for the **Heritage Hub** mobile app (React Native / Expo). Single mobile client, **no BFF**. Resource-first with light screen-aggregation (`GET /home`).
+**Conventions**
 
-> **Authority:** [ADR index](./adr/README.md) · **MVP scope:** [ADR-003](./adr/ADR-003-mvp-scope.md) · **Guest mode (planned):** [guest-mode-route-matrix.md](./guest-mode-route-matrix.md)
-
-## Architecture Decisions (locked)
-
-- **No BFF layer** — resource-first; screen-aggregation only where round-trips hurt (`GET /home`).
-- **Auth (interim until guest mode):** all endpoints require auth **except** `GET /app/config` and `/auth/*`. Guest browsing is **planned** — see guest-mode-route-matrix.
-- **Auth model:** short-lived access token (`Authorization: Bearer`) + rotating refresh token (SecureStore). DB-backed rotation + reuse detection via token family. **No** access-token blacklist.
-- **Localization:** detail = both languages (`name_en` / `name_ar`); lists may return preferred language only.
-- **Timestamps:** ISO 8601 UTC.
-- **Monuments:** single `Monument` resource; templates via `kind` discriminator (`monument` | `template`). See [ADR-004](./adr/ADR-004-monument-api-naming.md).
-- **ORM:** Prisma (ADR-002). Polymorphic relations: [ADR-007](./adr/ADR-007-polymorphic-associations.md).
-
-## Global Conventions
-
-- **Unified error envelope:** `{ "error": { "code": "STRING_ENUM", "message": "...", "details": {} } }`
-- **Empty list:** HTTP 200 with `{ "data": [] }`. **Not found:** HTTP 404 with error envelope.
-- **Cursor pagination:** `?cursor=&limit=` → `{ "data": [...], "cursor": "", "has_next": bool }`
+- **Versioning:** all routes are versioned under `/v1/` (resolved — applies project-wide, matching `BACKEND_WORKFLOW.md`).
+    
+- **Auth:** `Bearer {{accessToken}}` unless marked _Public_. `user_id` is always derived server-side from the JWT — never accepted from the client.
+    
+- **Pagination:** cursor-based via `?cursor=&limit=`. Standard list response shape: `{ "data": [...], "cursor": "", "has_next": true|false }`.
+    
+- **Error envelope:** all errors use a unified shape: `{ "error": { "code": "string", "message": "string", "details": [] } }`.
+    
+- **Entity references (ADR-007):** Only `USER_INTERACTION` uses the string-based polymorphic pair `entity_type` + `entity_id`. Ratings, reports, and favorites reference the target via explicit `cityId` / `monumentId` in the request body — **not** a polymorphic pair.
+    
+- **Localization:** bilingual (English/Arabic) content where applicable.
+    
 
 ---
 
-## Implemented Endpoints (MVP)
+## 1\. App Bootstrap
 
-### App Bootstrap
+| Method | Path | Auth | Description |
+| --- | --- | --- | --- |
+| GET | `/v1/app/config` | Public | App configuration, feature flags, minimum supported version (cacheable). |
 
-- `GET /app/config` — public bootstrap (feature flags, min app version).
+## 2\. Authentication
 
-### Authentication
+| Method | Path | Auth | Description |
+| --- | --- | --- | --- |
+| POST | `/v1/auth/register` | Public | Register a new user with email + password. |
+| POST | `/v1/auth/login` | Public | Email/password login; returns access + rotating refresh tokens. |
+| POST | `/v1/auth/social` | Public | Social login (Google / Facebook / Apple, OAuth 2.0). |
+| POST | `/v1/auth/refresh` | Public (refresh token in body) | Exchange a rotating refresh token for a new access token. |
+| POST | `/v1/auth/logout` | Refresh token in body | Revoke the current session's refresh token. |
+| POST | `/v1/auth/logout-all` | Bearer (access token) | Revoke all sessions for the user. |
+| POST | `/v1/auth/password/reset-request` | Public | Request a password reset email. |
+| POST | `/v1/auth/password/reset-confirm` | Public | Confirm password reset with token + new password. |
 
-- `POST /auth/register`
-- `POST /auth/login`
-- `POST /auth/social`
-- `POST /auth/refresh`
-- `POST /auth/logout`
-- `POST /auth/logout-all`
-- `POST /auth/password/reset-request`
-- `POST /auth/password/reset-confirm`
+## 3\. User Profile & Settings
 
-### Devices & Push
+| Method | Path | Auth | Description |
+| --- | --- | --- | --- |
+| GET | `/v1/me` | Bearer | Get the current user's profile. |
+| PATCH | `/v1/me` | Bearer | Update profile (display name, avatar, language, etc.). |
+| GET | `/v1/me/settings` | Bearer | Get user settings. |
+| PATCH | `/v1/me/settings` | Bearer | Update user settings. |
 
-- `POST /devices/push-token`
+## 4\. Devices & Push
 
-### User Profile & Settings
+| Method | Path | Auth | Description |
+| --- | --- | --- | --- |
+| POST | `/v1/devices/push-token` | Bearer | Idempotent upsert of the device push token. |
 
-- `GET /me` · `PATCH /me`
-- `GET /me/settings` · `PATCH /me/settings`
+## 5\. Home & Discovery
 
-### Personality Quiz
+| Method | Path | Auth | Description |
+| --- | --- | --- | --- |
+| GET | `/v1/home` | Bearer | Aggregated home feed, including the "For You" recommendations section. |
+| GET | `/v1/categories` | Bearer | List content categories. |
+| GET | `/v1/search?q=&cursor=&limit=` | Bearer | Full-text search across cities/monuments/categories (bilingual). |
+| GET | `/v1/search/suggestions?q=` | Bearer | Type-ahead search suggestions. |
 
-- `GET /personality/quiz`
-- `POST /personality/quiz/submit`
-- `GET /me/personality`
+## 6\. Cities
 
-### Home & Discovery
+| Method | Path | Auth | Description |
+| --- | --- | --- | --- |
+| GET | `/v1/cities?cursor=&limit=` | Bearer | List cities (cursor-paginated). |
+| GET | `/v1/cities/:cityId` | Bearer | Get a single city (bilingual detail). |
 
-- `GET /home`
-- `GET /categories`
-- `GET /search`
-- `GET /search/suggestions`
+## 7\. Monuments (ADR-004)
 
-### Cities
+> Per ADR-004, the resource is `/monuments` with `:monumentId`. Templates are exposed via `?kind=template` on the same Monument table (no separate `/items` resource). 
+  
 
-- `GET /cities`
-- `GET /cities/:cityId`
+| Method | Path | Auth | Description |
+| --- | --- | --- | --- |
+| GET | `/v1/monuments?city_id=&category=&kind=&cursor=&limit=` | Bearer | List monuments; filter by `city_id`, `category`, and `kind` (`monument` default, `template`). |
+| GET | `/v1/monuments/:monumentId` | Bearer | Get a single monument. |
+| GET | `/v1/monuments/:monumentId/awareness` | Bearer | Cultural / safety / awareness cards for a monument. |
+| GET | `/v1/monuments/:monumentId/timeline` | Bearer | Historical timeline events for a monument. |
+| GET | `/v1/monuments/:monumentId/media` | Bearer | Media assets (photos, infographics, maps) for a monument. |
 
-### Monuments
+## 8\. Panorama
 
-- `GET /monuments` — filter: `kind`, `category`, `city_id`, `cursor`, `limit`
-- `GET /monuments/:monumentId`
-- `GET /monuments/:monumentId/awareness`
-- `GET /monuments/:monumentId/timeline`
-- `GET /monuments/:monumentId/media`
-- `GET /monuments/:monumentId/panorama`
+| Method | Path | Auth | Description |
+| --- | --- | --- | --- |
+| GET | `/v1/monuments/:monumentId/panorama` | Bearer | 360° panorama (multi-resolution URLs, narration, camera bounds). |
 
-### Favorites
+## 9\. Personality Quiz
 
-- `GET /me/favorites`
-- `POST /favorites` — body: `{ "cityId" }` or `{ "monumentId" }`
-- `DELETE /favorites/:monumentId` — or city variant per implementation
+| Method | Path | Auth | Description |
+| --- | --- | --- | --- |
+| GET | `/v1/personality/quiz` | Bearer | Get the personality quiz. |
+| POST | `/v1/personality/quiz/submit` | Bearer | Submit personality quiz answers. |
+| GET | `/v1/me/personality` | Bearer | Get the current user's personality profile. |
 
-### Ratings & Reports
+## 10\. Favorites
 
-- `POST /ratings` — body: `{ "monumentId" \| "cityId", "stars" }`
-- `POST /reports` — body: `{ "monumentId" \| "cityId", "reason", "description?" }`
-- `GET /me/reports`
+| Method | Path | Auth | Description |
+| --- | --- | --- | --- |
+| GET | `/v1/me/favorites?cursor=&limit=` | Bearer | List the user's favorites. |
+| POST | `/v1/favorites` | Bearer | Add a favorite (target via `monumentId` / `cityId` in body — ADR-007). |
+| DELETE | `/v1/favorites/:monumentId` | Bearer | Remove a favorite. |
 
-### Interaction Telemetry
+## 11\. Ratings & Reports
 
-- `POST /interactions/batch` — batched user events for AI signals. See [interaction-telemetry.md](./plans/interaction-telemetry.md).
+| Method | Path | Auth | Description |
+| --- | --- | --- | --- |
+| POST | `/v1/ratings` | Bearer | Create / update a rating (1–5 stars); target via `monumentId` / `cityId` in body. |
+| POST | `/v1/reports` | Bearer | Report inaccurate or inappropriate content; target via `monumentId` / `cityId` in body. |
+| GET | `/v1/me/reports?cursor=&limit=` | Bearer | List the user's submitted reports. |
 
-### Chatbot
+## 12\. Chatbot
 
-- `GET /chat/sessions` · `POST /chat/sessions`
-- `GET /chat/sessions/:sessionId/messages`
-- `POST /chat/sessions/:sessionId/messages`
+| Method | Path | Auth | Description |
+| --- | --- | --- | --- |
+| GET | `/v1/chat/sessions?cursor=&limit=` | Bearer | List chat sessions. |
+| POST | `/v1/chat/sessions` | Bearer | Start a new chat session. |
+| GET | `/v1/chat/sessions/:sessionId/messages?cursor=&limit=` | Bearer | Get messages in a session. |
+| POST | `/v1/chat/sessions/:sessionId/messages` | Bearer | Send a message in a session. |
 
-### Notifications
+## 13\. Notifications
 
-- `GET /notifications`
-- `POST /notifications/:notificationId/read`
-- `POST /notifications/read-all`
+| Method | Path | Auth | Description |
+| --- | --- | --- | --- |
+| GET | `/v1/notifications?cursor=&limit=` | Bearer | List notifications. |
+| POST | `/v1/notifications/:notificationId/read` | Bearer | Mark a single notification as read. |
+| POST | `/v1/notifications/read-all` | Bearer | Mark all notifications as read. |
+
+## 14\. User Interaction Telemetry
+
+| Method | Path | Auth | Description |
+| --- | --- | --- | --- |
+| POST | `/v1/interactions/batch` | Bearer | Submit a batch of passive interaction events (async via BullMQ). Returns `202 Accepted` with `{ data: { accepted, rejected } }`. Max 50 events/batch; 30 req/min per user. See §14.1. |
+
+### 14.1 Telemetry payload
+
+Request body:
+
+``` json
+{
+  "events": [
+    {
+      "event_id": "uuid",
+      "action_type": "view_monument | view_city | view_panorama | search | view_home",
+      "entity_type": "city | monument | panorama",
+      "entity_id": "uuid",
+      "occurred_at": "ISO-8601",
+      "duration_seconds": 45
+    }
+  ]
+}
+
+ ```
+
+- `duration_seconds` is required for `view_monument` / `view_city` / `view_panorama`; omit for `search` / `view_home`.
+    
+- **Errors:** `400` (schema/enum invalid), `401` (no/invalid token), `413` (batch > 50).
+    
+- **Trigger note:** `add_favorite` and `complete_quiz` are handled by their own endpoints (favorites, personality quiz) and are intentionally NOT duplicated as telemetry events.
+    
+- **Reference:** see `doc/plans/interaction-telemetry.md` and the "User Interaction Telemetry — Plan" folder in this collection.
+    
 
 ---
 
-## Deferred (not MVP)
+## Endpoint Inventory Summary (MVP)
 
-### Gamified content quizzes
-
-- `GET /monuments/:monumentId/quizzes`
-- `GET /quizzes/:quizId`
-- `POST /quizzes/:quizId/attempts`
-
-### Gamification (mobile + backend)
-
-Leaderboards, achievements, XP/coins, challenges — **out of MVP**. Vision demonstrated via **separate gamification showcase website** (prototype, not this API). See ADR-003.
-
-### Other deferred
-
-- Guest mode public routes (interim: auth required)
-- Caching (ETag / delta-sync)
-- Panorama asset delivery internals
-- Chat streaming (sync REST for MVP)
-- Admin dashboards
-- Behavioral personality counters (static quiz only for MVP)
-
----
-
-## Push Notification Payload Contract
-
-- `id` — NOTIFICATION id (dedupe + mark-read)
-- `type` — enum
-- `target_id` — referenced resource id
-- `deep_link` — in-app deep link
-
-Payloads are lightweight; client refetches localized content via API.
+| Domain | Endpoints |
+| --- | --- |
+| App Bootstrap | 1 |
+| Authentication | 8 |
+| User Profile & Settings | 4 |
+| Devices & Push | 1 |
+| Home & Discovery | 4 |
+| Cities | 2 |
+| Monuments | 5 |
+| Panorama | 1 |
+| Personality Quiz | 3 |
+| Favorites | 3 |
+| Ratings & Reports | 3 |
+| Chatbot | 4 |
+| Notifications | 3 |
+| User Interaction Telemetry | 1 |
+| **Total (MVP)** | **43** |
 
 ---
 
-## Entity-Model Prerequisites
+## Deferred — Not in MVP
 
-- **Device/Session** — refresh token + push token + platform + `last_seen`
-- **USER** — nullable `password_hash`, `auth_provider`
-- **`updated_at`** on cacheable entities; stable **`id`** on NOTIFICATION
-- **Monument** — `kind` enum for monument vs template (ADR-004)
+These exist as requirements but are explicitly out of MVP per ADR-003. They are NOT counted in the inventory above.
+
+| Domain | Proposed endpoints | Authority |
+| --- | --- | --- |
+| Gamified Quizzes | `GET /v1/monuments/:monumentId/quizzes`, `GET /v1/quizzes/:quizId`, `POST /v1/quizzes/:quizId/attempts` | ADR-003 (deferred) |
+| Leaderboards (US-34) | `GET /v1/leaderboards?period=weekly|monthly|all_time` | Backlog |
+| Achievements (US-31/32) | `GET /v1/achievements`, `GET /v1/me/achievements` | Backlog |
+| Challenges (US-25) | `GET /v1/me/challenges` | Backlog |
+| Learning Paths (US-23) | `GET /v1/me/learning-path` | Backlog |
+| Admin Panel (US-38–40) | content management, moderation queue, analytics (separate admin service/collection) | Backlog |
+
+> Note: the gamified quiz endpoints currently still exist in the Heritage-Hub-API Postman collection (Quizzes folder). They are retained there for design reference but are **Deferred — not MVP** per ADR-003. 
+  
 
 ---
 
-## Postman Environments
+## Open Questions / Follow-ups
 
-| Variable | Dev | Staging | Prod |
-|---|---|---|---|
-| `baseUrl` | `https://dev-api.heritagehub.example/v1` | `https://staging-api.heritagehub.example/v1` | `https://api.heritagehub.example/v1` |
-| `accessToken` | secret | secret | secret |
-| `refreshToken` | secret | secret | secret |
+- **Guest mode:** deferred per ADR-003. Interim rule: all endpoints require auth in MVP; guest access matrix to be defined when guest mode ships.
+    
+- **Items vs Monuments:** RESOLVED per ADR-004 — `/monuments` is canonical; `/items` is retired. Any lingering `/items` references should be migrated.
+    
+- **Reference docs:** ADR index, `BACKEND_WORKFLOW.md`, `interaction-telemetry.md`, and the feature/phase plan should be linked from here once paths are finalized.
+    
 
-Bearer auth uses `{{accessToken}}` from the active environment.
+> Maintenance: when an endpoint is added/changed in the Heritage-Hub-API collection, update this contract in the same change so the two never drift.
