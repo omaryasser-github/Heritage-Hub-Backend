@@ -24,7 +24,6 @@ erDiagram
   MONUMENT ||--o| PANORAMA : has
   MONUMENT ||--o{ MEDIA_ASSET : has
   MONUMENT ||--o{ AWARENESS_CARD : has
-  MONUMENT ||--o{ HOTSPOT : contains
   MONUMENT }o--o{ CATEGORY : tagged
   MONUMENT ||--o{ QUIZ : has
   MONUMENT ||--o{ RATING : receives
@@ -48,7 +47,7 @@ erDiagram
 
   USER {
     uuid id PK
-    string email
+    string email UK
     string password_hash
     string display_name
     string avatar_url
@@ -76,35 +75,58 @@ erDiagram
     string description
     int xp_reward
     int coin_reward
+    int progress_current
+    int progress_target
+    uuid target_entity_id
+    enum target_entity_type
     boolean is_completed
+    timestamp created_at
+    timestamp updated_at
     timestamp expires_at
   }
   CITY {
     uuid id PK
+    string slug UK
     string name_en
     string name_ar
+    string governorate
+    string governorate_ar
     string description_en
     string description_ar
     string thumbnail_url
     float latitude
     float longitude
+    enum status
     timestamp created_at
+    timestamp updated_at
   }
   MONUMENT {
     uuid id PK
     uuid city_id FK
+    string slug UK
     string name_en
     string name_ar
     string description_en
     string description_ar
+    string subcategory
+    float latitude
+    float longitude
     string thumbnail_url
+    string entry_fee
+    string opening_hours
+    string_array tags
+    enum status
     timestamp created_at
+    timestamp updated_at
   }
   CATEGORY {
     uuid id PK
+    string slug UK
     string name_en
     string name_ar
     enum type
+    timestamp created_at
+    timestamp updated_at
   }
   PANORAMA {
     uuid id PK
@@ -116,6 +138,7 @@ erDiagram
     string narration_url_ar
     json camera_bounds
     timestamp created_at
+    timestamp updated_at
   }
   HOTSPOT {
     uuid id PK
@@ -128,6 +151,8 @@ erDiagram
     string body_en
     string body_ar
     string image_url
+    timestamp created_at
+    timestamp updated_at
   }
   MEDIA_ASSET {
     uuid id PK
@@ -138,6 +163,7 @@ erDiagram
     string caption_en
     string caption_ar
     timestamp created_at
+    timestamp updated_at
   }
   TIMELINE_EVENT {
     uuid id PK
@@ -147,9 +173,11 @@ erDiagram
     string description_en
     string description_ar
     string image_url
-    int year
+    int year "Negative for BCE, positive for CE"
     string era
     int display_order
+    timestamp created_at
+    timestamp updated_at
   }
   AWARENESS_CARD {
     uuid id PK
@@ -158,7 +186,8 @@ erDiagram
     enum card_type
     string body_en
     string body_ar
-    timestamp last_updated
+    timestamp created_at
+    timestamp updated_at
   }
   QUIZ {
     uuid id PK
@@ -190,6 +219,7 @@ erDiagram
     boolean passed
     int attempt_number
     timestamp completed_at
+    unique user_id_quiz_id_attempt_number UK
   }
   ACHIEVEMENT {
     uuid id PK
@@ -206,6 +236,7 @@ erDiagram
     uuid user_id FK
     uuid achievement_id FK
     timestamp earned_at
+    unique user_id_achievement_id UK
   }
   XP_TRANSACTION {
     uuid id PK
@@ -222,6 +253,7 @@ erDiagram
     uuid entity_id FK
     enum entity_type
     timestamp created_at
+    unique user_id_entity_id_entity_type UK
   }
   RATING {
     uuid id PK
@@ -230,6 +262,7 @@ erDiagram
     enum entity_type
     int stars
     timestamp updated_at
+    unique user_id_entity_id_entity_type UK
   }
   REPORT {
     uuid id PK

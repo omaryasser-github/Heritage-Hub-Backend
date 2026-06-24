@@ -1,12 +1,14 @@
-# Backend Stack Selection — Heritage Hub
+> **ORM:** Prisma selected — see [ADR-002](../adr/ADR-002-prisma-orm.md). NestJS stack ADR: [backend-stack-tech.md](../backend-stach-tech.md) (ADR-001).
 
 ## Context & MVP Scope
 
 Heritage Hub is a React Native (Expo) app \~80% complete on the frontend. This decision selects the backend stack for MVP phase 1.
 
-**In scope:** auth, items/cities CRUD + filters, ratings (upsert), reports, notifications, recommendations proxy (HTTP call to a separate FastAPI AI service — Pattern A), and the personality onboarding quiz.
+**In scope:** auth, cities/monuments CRUD + filters, ratings (upsert), reports, notifications, recommendations proxy (HTTP call to a separate FastAPI AI service — Pattern A), personality onboarding quiz, and interaction telemetry.
 
-**Out of scope (deferred):** gamification (leaderboards, achievements/badges, challenges, learning paths), guest mode, gamified quizzes.
+**Out of scope (MVP backend):** mobile gamification (leaderboards, achievements/badges, challenges, learning paths), gamified content quizzes, guest mode (planned post-core), admin dashboards.
+
+**Gamification showcase website:** A separate teammate project demonstrates gamification UX for supervisors using mock/demo data — **not** the Heritage Hub production API. See [ADR-003](../doc/adr/ADR-003-mvp-scope.md).
 
 **Architecture note (Pattern A):** The AI team runs its own FastAPI/Python service. Our backend calls it over HTTP. Therefore AI/LLM fit is intentionally a low-weight criterion.
 
@@ -55,7 +57,7 @@ Formula: total = Σ (Score/10) × Weight. Since weights sum to 100, the total is
 
 **Justification highlights:**
 
-- NestJS: best frontend integration (first-class TS, shared types), strong DI/module structure for a 24-entity domain, solid ORM options (TypeORM/Prisma). Slightly steeper learning curve than Express but transfers TS skill directly.
+- NestJS: best frontend integration (first-class TS, shared types), strong DI/module structure for a 24-entity domain, solid ORM (Prisma selected — ADR-002). Slightly steeper learning curve than Express but transfers TS skill directly.
     
 - Express: highest familiarity for a TS/JS dev, huge ecosystem, but unopinionated — more boilerplate and weaker structure for a large relational domain.
     
@@ -106,6 +108,6 @@ Ranking by weighted total:
     
 - **Context:** Frontend is React Native/Expo (TypeScript). MVP scope is auth, CRUD with filters, ratings, reports, notifications, a recommendations proxy to a separate FastAPI AI service (Pattern A), and a personality onboarding quiz. The ER model is heavily relational (24+ entities, polymorphic FKs). A weighted decision matrix across 8 criteria was used; formula (Score/10) × Weight with weights summing to 100.
     
-- **Rationale:** NestJS scored highest (82.6%). It maximizes TS skill transfer and end-to-end type sharing with the RN client, provides opinionated structure (modules/DI) well-suited to a large relational domain, and integrates cleanly with TypeORM/Prisma. Express was within the tie-breaker band (80.8%) and is the documented fallback if the team prefers minimal abstraction. Python stacks (Django 77.2%, FastAPI 76.6%) ranked behind due to weaker TS/RN type-sharing; FastAPI's AI affinity is intentionally low-weight under Pattern A. Laravel and Go (66.2%) trailed on skill transfer and dev-speed/ORM-ergonomics respectively.
+- **Rationale:** NestJS scored highest (82.6%). It maximizes TS skill transfer and end-to-end type sharing with the RN client, provides opinionated structure (modules/DI) well-suited to a large relational domain, and integrates cleanly with **Prisma** (ADR-002).
     
-- **Consequences:** Team commits to learning/standardizing on NestJS. Use a TS-first ORM (Prisma or TypeORM) to match the relational ER. Recommendations are implemented as an HTTP client module calling the external FastAPI service. Revisit if performance-critical paths emerge (Go) or if the AI service merges into this backend (would raise FastAPI's relevance).
+- **Consequences:** Team commits to NestJS + **Prisma**. Monuments API at `/monuments` (ADR-004). Recommendations via HTTP client to external FastAPI. Gamification deferred; showcase website is prototype only. Guest mode planned after core auth/content.
