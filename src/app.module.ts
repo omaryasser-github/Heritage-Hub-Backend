@@ -10,6 +10,7 @@ import { ExploreModule } from './modules/explore/explore.module';
 import { FeedbackModule } from './modules/feedback/feedback.module';
 import { InteractionsModule } from './modules/interactions/interactions.module';
 import { NotificationsModule } from './modules/notifications/notifications.module';
+import { PersonalityModule } from './modules/personality/personality.module';
 import { UsersModule } from './modules/users/users.module';
 import { AppConfigController, HealthController } from './shared/controllers/health.controller';
 import { JwtAuthGuard } from './shared/guards/jwt-auth.guard';
@@ -29,6 +30,7 @@ import { RolesGuard } from './shared/guards/roles.guard';
     FeedbackModule,
     NotificationsModule,
     InteractionsModule,
+    PersonalityModule,
   ],
   controllers: [HealthController, AppConfigController],
   providers: [
