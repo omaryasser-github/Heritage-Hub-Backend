@@ -16,4 +16,10 @@ export default () => ({
   redis: {
     url: process.env.REDIS_URL ?? 'redis://localhost:6379',
   },
+  aiService: {
+    url: process.env.AI_SERVICE_URL ?? 'http://localhost:8000',
+    apiKey: process.env.AI_SERVICE_API_KEY ?? 'dev-ai-key-change-me',
+    timeoutMs: parseInt(process.env.AI_SERVICE_TIMEOUT_MS ?? '5000', 10),
+    useStub: process.env.AI_SERVICE_USE_STUB !== 'false',
+  },
 });

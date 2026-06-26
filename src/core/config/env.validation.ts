@@ -11,4 +11,8 @@ export const envValidationSchema = Joi.object({
   REDIS_URL: Joi.string().uri().default('redis://localhost:6379'),
   JWT_ACCESS_SECRET: Joi.string().min(16).default('dev-access-secret-change-me'),
   JWT_ACCESS_EXPIRES: Joi.string().default('15m'),
+  AI_SERVICE_URL: Joi.string().uri().default('http://localhost:8000'),
+  AI_SERVICE_API_KEY: Joi.string().default('dev-ai-key-change-me'),
+  AI_SERVICE_TIMEOUT_MS: Joi.number().integer().min(1000).max(30000).default(5000),
+  AI_SERVICE_USE_STUB: Joi.string().valid('true', 'false').default('true'),
 });
