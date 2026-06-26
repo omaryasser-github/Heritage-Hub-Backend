@@ -5,6 +5,7 @@ import configuration from './core/config/configuration';
 import { envValidationSchema } from './core/config/env.validation';
 import { PrismaModule } from './core/database/prisma.module';
 import { AppBullModule } from './core/queue/bull.module';
+import { AppThrottlerModule } from './core/security/app-throttler.module';
 import { AppLoggerService } from './core/logger/logger.service';
 import { AiChatModule } from './modules/ai-chat/ai-chat.module';
 import { AuthModule } from './modules/auth/auth.module';
@@ -18,6 +19,7 @@ import { UsersModule } from './modules/users/users.module';
 import { AppConfigController, HealthController } from './shared/controllers/health.controller';
 import { JwtAuthGuard } from './shared/guards/jwt-auth.guard';
 import { RolesGuard } from './shared/guards/roles.guard';
+import { TraceInterceptor } from './shared/interceptors/trace.interceptor';
 
 @Module({
   imports: [
@@ -28,6 +30,7 @@ import { RolesGuard } from './shared/guards/roles.guard';
     }),
     PrismaModule,
     AppBullModule,
+    AppThrottlerModule,
     AuthModule,
     UsersModule,
     ExploreModule,
@@ -41,6 +44,7 @@ import { RolesGuard } from './shared/guards/roles.guard';
   controllers: [HealthController, AppConfigController],
   providers: [
     AppLoggerService,
+    TraceInterceptor,
     { provide: APP_GUARD, useClass: JwtAuthGuard },
     { provide: APP_GUARD, useClass: RolesGuard },
   ],
