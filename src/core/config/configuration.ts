@@ -9,4 +9,8 @@ export default () => ({
       recommendations_enabled: process.env.FEATURE_RECOMMENDATIONS_ENABLED !== 'false',
     },
   },
+  jwt: {
+    accessSecret: process.env.JWT_ACCESS_SECRET,
+    accessExpires: process.env.JWT_ACCESS_EXPIRES ?? '15m',
+  },
 });
