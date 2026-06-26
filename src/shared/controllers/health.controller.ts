@@ -1,8 +1,12 @@
 import { Controller, Get } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { SkipThrottle } from '@nestjs/throttler';
+import { Public } from '../decorators/public.decorator';
 
+@SkipThrottle()
 @Controller('health')
 export class HealthController {
+  @Public()
   @Get()
   getHealth() {
     return {
@@ -16,6 +20,7 @@ export class HealthController {
 export class AppConfigController {
   constructor(private readonly configService: ConfigService) {}
 
+  @Public()
   @Get('config')
   getConfig() {
     return {
