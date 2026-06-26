@@ -1,6 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PersonalityType } from '@prisma/client';
 import { PrismaService } from '../../core/database/prisma.service';
+import { RecommendationRefreshService } from '../recommendations/recommendation-refresh.service';
 import {
   PERSONALITY_QUIZ_QUESTIONS,
   PERSONA_CATEGORY_SLUGS,
@@ -27,7 +28,10 @@ export interface PersonalityResultResponse {
 
 @Injectable()
 export class PersonalityService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly recommendationRefreshService: RecommendationRefreshService,
+  ) {}
 
   getQuiz(): QuizResponse {
     return {
@@ -56,6 +60,8 @@ export class PersonalityService {
         assessedAt,
       },
     });
+
+    await this.recommendationRefreshService.enqueue(userId);
 
     return {
       personality_type: result.personalityType,
