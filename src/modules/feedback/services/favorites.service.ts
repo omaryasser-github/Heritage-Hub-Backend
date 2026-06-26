@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { Favorite } from '@prisma/client';
 import { PrismaService } from '../../../core/database/prisma.service';
+import { RecommendationRefreshService } from '../../recommendations/recommendation-refresh.service';
 import type { DataEnvelope } from '../../../shared/interceptors/response.interceptor';
 import {
   buildPaginatedEnvelope,
@@ -24,6 +25,7 @@ export class FavoritesService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly contentTargetService: ContentTargetService,
+    private readonly recommendationRefreshService: RecommendationRefreshService,
   ) {}
 
   async listFavorites(
@@ -51,6 +53,7 @@ export class FavoritesService {
         create: { userId, cityId: target.cityId },
         update: {},
       });
+      await this.recommendationRefreshService.enqueue(userId);
       return this.toResponse(favorite);
     }
 
@@ -59,6 +62,7 @@ export class FavoritesService {
       create: { userId, monumentId: target.monumentId! },
       update: {},
     });
+    await this.recommendationRefreshService.enqueue(userId);
     return this.toResponse(favorite);
   }
 

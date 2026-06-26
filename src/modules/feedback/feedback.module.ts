@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { RecommendationsModule } from '../recommendations/recommendations.module';
 import {
   FavoritesController,
   MeFavoritesController,
@@ -11,6 +12,7 @@ import { RatingsService } from './services/ratings.service';
 import { ReportsService } from './services/reports.service';
 
 @Module({
+  imports: [RecommendationsModule],
   controllers: [
     FavoritesController,
     MeFavoritesController,

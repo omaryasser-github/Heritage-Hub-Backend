@@ -4,12 +4,16 @@ import { ConfigModule } from '@nestjs/config';
 import configuration from './core/config/configuration';
 import { envValidationSchema } from './core/config/env.validation';
 import { PrismaModule } from './core/database/prisma.module';
+import { AppBullModule } from './core/queue/bull.module';
 import { AppLoggerService } from './core/logger/logger.service';
+import { AiChatModule } from './modules/ai-chat/ai-chat.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { ExploreModule } from './modules/explore/explore.module';
 import { FeedbackModule } from './modules/feedback/feedback.module';
 import { InteractionsModule } from './modules/interactions/interactions.module';
 import { NotificationsModule } from './modules/notifications/notifications.module';
+import { PersonalityModule } from './modules/personality/personality.module';
+import { RecommendationsModule } from './modules/recommendations/recommendations.module';
 import { UsersModule } from './modules/users/users.module';
 import { AppConfigController, HealthController } from './shared/controllers/health.controller';
 import { JwtAuthGuard } from './shared/guards/jwt-auth.guard';
@@ -23,12 +27,16 @@ import { RolesGuard } from './shared/guards/roles.guard';
       validationSchema: envValidationSchema,
     }),
     PrismaModule,
+    AppBullModule,
     AuthModule,
     UsersModule,
     ExploreModule,
     FeedbackModule,
     NotificationsModule,
     InteractionsModule,
+    PersonalityModule,
+    RecommendationsModule,
+    AiChatModule,
   ],
   controllers: [HealthController, AppConfigController],
   providers: [

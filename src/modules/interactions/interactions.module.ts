@@ -1,6 +1,5 @@
 import { BullModule, getQueueToken } from '@nestjs/bullmq';
 import { Module } from '@nestjs/common';
-import { ConfigModule, ConfigService } from '@nestjs/config';
 import { INTERACTIONS_INGEST_QUEUE } from './interactions.constants';
 import { InteractionsController } from './interactions.controller';
 import { InteractionsService } from './interactions.service';
@@ -8,20 +7,9 @@ import { InteractionIngestProcessor } from './processors/interaction-ingest.proc
 
 const isTestEnv = process.env.NODE_ENV === 'test' || process.env.E2E_TEST === 'true';
 
-const bullImports = isTestEnv
+const bullQueueImports = isTestEnv
   ? []
   : [
-      BullModule.forRootAsync({
-        imports: [ConfigModule],
-        inject: [ConfigService],
-        useFactory: (configService: ConfigService) => ({
-          connection: {
-            url: configService.get<string>('redis.url', 'redis://localhost:6379'),
-            maxRetriesPerRequest: null,
-            lazyConnect: true,
-          },
-        }),
-      }),
       BullModule.registerQueue({
         name: INTERACTIONS_INGEST_QUEUE,
         defaultJobOptions: {
@@ -48,7 +36,7 @@ const bullProviders = isTestEnv
   : [InteractionsService, InteractionIngestProcessor];
 
 @Module({
-  imports: bullImports,
+  imports: bullQueueImports,
   controllers: [InteractionsController],
   providers: bullProviders,
 })
