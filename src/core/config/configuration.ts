@@ -13,4 +13,7 @@ export default () => ({
     accessSecret: process.env.JWT_ACCESS_SECRET,
     accessExpires: process.env.JWT_ACCESS_EXPIRES ?? '15m',
   },
+  redis: {
+    url: process.env.REDIS_URL ?? 'redis://localhost:6379',
+  },
 });
