@@ -1,7 +1,9 @@
 import { IsNotEmpty, IsOptional, IsString, MaxLength, MinLength } from 'class-validator';
+import { SanitizeText } from '../../../shared/decorators/sanitize.decorator';
 import { PaginationQueryDto } from './pagination.dto';
 
 export class SearchQueryDto extends PaginationQueryDto {
+  @SanitizeText()
   @IsString()
   @IsNotEmpty()
   @MinLength(1)
@@ -10,6 +12,7 @@ export class SearchQueryDto extends PaginationQueryDto {
 }
 
 export class SearchSuggestionsQueryDto {
+  @SanitizeText()
   @IsString()
   @IsNotEmpty()
   @MinLength(1)

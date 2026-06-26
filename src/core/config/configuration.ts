@@ -16,6 +16,18 @@ export default () => ({
   redis: {
     url: process.env.REDIS_URL ?? 'redis://localhost:6379',
   },
+  cors: {
+    origins: (process.env.CORS_ORIGINS ?? 'http://localhost:3000,http://localhost:5173')
+      .split(',')
+      .map((origin) => origin.trim())
+      .filter(Boolean),
+  },
+  throttle: {
+    defaultTtlMs: parseInt(process.env.THROTTLE_DEFAULT_TTL_MS ?? '60000', 10),
+    defaultLimit: parseInt(process.env.THROTTLE_DEFAULT_LIMIT ?? '60', 10),
+    authTtlMs: parseInt(process.env.THROTTLE_AUTH_TTL_MS ?? '60000', 10),
+    authLimit: parseInt(process.env.THROTTLE_AUTH_LIMIT ?? '10', 10),
+  },
   aiService: {
     url: process.env.AI_SERVICE_URL ?? 'http://localhost:8000',
     apiKey: process.env.AI_SERVICE_API_KEY ?? 'dev-ai-key-change-me',

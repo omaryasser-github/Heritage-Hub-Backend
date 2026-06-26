@@ -1,7 +1,9 @@
 import { Controller, Get } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { SkipThrottle } from '@nestjs/throttler';
 import { Public } from '../decorators/public.decorator';
 
+@SkipThrottle()
 @Controller('health')
 export class HealthController {
   @Public()

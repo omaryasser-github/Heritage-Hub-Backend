@@ -1,27 +1,22 @@
-import { INestApplication, ValidationPipe } from '@nestjs/common';
+import { INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { App } from 'supertest/types';
 import { AppModule } from '../../src/app.module';
-import { HttpExceptionFilter } from '../../src/shared/filters/http-exception.filter';
-import { ResponseInterceptor } from '../../src/shared/interceptors/response.interceptor';
+import { configureHttpApp } from '../../src/bootstrap/configure-http-app';
 
-export async function createE2eApp(): Promise<INestApplication<App>> {
+export interface CreateE2eAppOptions {
+  swagger?: boolean;
+}
+
+export async function createE2eApp(
+  options: CreateE2eAppOptions = {},
+): Promise<INestApplication<App>> {
   const moduleFixture: TestingModule = await Test.createTestingModule({
     imports: [AppModule],
   }).compile();
 
   const app = moduleFixture.createNestApplication();
-  app.setGlobalPrefix('v1');
-  app.useGlobalPipes(
-    new ValidationPipe({
-      whitelist: true,
-      forbidNonWhitelisted: true,
-      transform: true,
-      transformOptions: { enableImplicitConversion: true },
-    }),
-  );
-  app.useGlobalFilters(new HttpExceptionFilter());
-  app.useGlobalInterceptors(new ResponseInterceptor());
+  configureHttpApp(app, { swagger: options.swagger });
   await app.init();
   return app;
 }

@@ -7,6 +7,7 @@ import {
   Logger,
 } from '@nestjs/common';
 import { Request, Response } from 'express';
+import { REQUEST_ID_HEADER } from '../interceptors/trace.interceptor';
 
 export interface ErrorEnvelope {
   error: {
@@ -26,10 +27,11 @@ export class HttpExceptionFilter implements ExceptionFilter {
     const request = ctx.getRequest<Request>();
 
     const { status, code, message, details } = this.mapException(exception);
+    const requestId = this.resolveRequestId(request);
 
     if (status >= 500) {
       this.logger.error(
-        `${request.method} ${request.url}`,
+        `[${requestId}] ${request.method} ${request.url}`,
         exception instanceof Error ? exception.stack : String(exception),
       );
     }
@@ -43,6 +45,19 @@ export class HttpExceptionFilter implements ExceptionFilter {
     };
 
     response.status(status).json(body);
+  }
+
+  private resolveRequestId(request: Request): string {
+    if (request.requestId) {
+      return request.requestId;
+    }
+
+    const header = request.headers[REQUEST_ID_HEADER];
+    if (typeof header === 'string' && header.length > 0) {
+      return header;
+    }
+
+    return 'unknown';
   }
 
   private mapException(exception: unknown): {
