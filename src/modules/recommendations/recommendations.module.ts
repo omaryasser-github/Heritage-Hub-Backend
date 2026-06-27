@@ -2,6 +2,7 @@ import { HttpModule } from '@nestjs/axios';
 import { BullModule, getQueueToken } from '@nestjs/bullmq';
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { isRedisEnabled } from '../../core/redis/redis-enabled';
 import { AiServiceHttpClient } from './clients/ai-service.http';
 import { AiServiceStubClient } from './clients/ai-service.stub';
 import { HomeController } from './controllers/home.controller';
@@ -10,11 +11,8 @@ import { RecommendationRefreshService } from './recommendation-refresh.service';
 import { AI_SERVICE_CLIENT, RECOMMENDATIONS_REFRESH_QUEUE } from './recommendations.constants';
 import { RecommendationsService } from './recommendations.service';
 
-const isTestEnv = process.env.NODE_ENV === 'test' || process.env.E2E_TEST === 'true';
-
-const bullQueueImports = isTestEnv
-  ? []
-  : [
+const bullQueueImports = isRedisEnabled()
+  ? [
       BullModule.registerQueue({
         name: RECOMMENDATIONS_REFRESH_QUEUE,
         defaultJobOptions: {
@@ -24,21 +22,22 @@ const bullQueueImports = isTestEnv
           removeOnFail: false,
         },
       }),
-    ];
+    ]
+  : [];
 
-const refreshProviders = isTestEnv
-  ? [
+const refreshProviders = isRedisEnabled()
+  ? [RecommendationRefreshService, RecommendationRefreshProcessor]
+  : [
       RecommendationRefreshService,
       {
         provide: getQueueToken(RECOMMENDATIONS_REFRESH_QUEUE),
         useValue: {
           add: async () => {
-            throw new Error('Redis unavailable in test environment');
+            throw new Error('Redis disabled — using synchronous refresh');
           },
         },
       },
-    ]
-  : [RecommendationRefreshService, RecommendationRefreshProcessor];
+    ];
 
 @Module({
   imports: [HttpModule, ...bullQueueImports],

@@ -8,8 +8,8 @@ import {
   decodeCursor,
   resolveLimit,
 } from '../../shared/utils/cursor-pagination';
-import { AiServiceClient } from '../recommendations/clients/ai-service.types';
-import { AI_SERVICE_CLIENT, CHAT_FALLBACK_REPLY } from '../recommendations/recommendations.constants';
+import { CHAT_FALLBACK_REPLY, TOURBOT_CHAT_CLIENT } from './ai-chat.constants';
+import type { TourbotChatClient } from './clients/tourbot-chat.types';
 
 export interface ChatSessionResponse {
   id: string;
@@ -30,7 +30,7 @@ export class AiChatService {
 
   constructor(
     private readonly prisma: PrismaService,
-    @Inject(AI_SERVICE_CLIENT) private readonly aiClient: AiServiceClient,
+    @Inject(TOURBOT_CHAT_CLIENT) private readonly tourbotClient: TourbotChatClient,
   ) {}
 
   async listSessions(
@@ -116,27 +116,12 @@ export class AiChatService {
       },
     });
 
-    const history = await this.prisma.chatMessage.findMany({
-      where: { sessionId },
-      orderBy: { createdAt: 'asc' },
-      take: 20,
-    });
-
     let assistantContent = CHAT_FALLBACK_REPLY;
     try {
-      const response = await this.aiClient.getChatCompletion({
-        session_id: sessionId,
-        user_id: userId,
-        message,
-        history: history.map((entry) => ({
-          role: entry.role === ChatMessageRole.assistant ? 'assistant' : 'user',
-          content: entry.content,
-        })),
-      });
-      assistantContent = response.reply;
+      assistantContent = await this.tourbotClient.sendMessage(sessionId, message);
     } catch (error) {
       this.logger.warn(
-        `Chat completion failed for session ${sessionId}`,
+        `TourBot chat failed for session ${sessionId}`,
         error instanceof Error ? error.message : String(error),
       );
     }

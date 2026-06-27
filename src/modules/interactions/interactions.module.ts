@@ -1,15 +1,13 @@
 import { BullModule, getQueueToken } from '@nestjs/bullmq';
 import { Module } from '@nestjs/common';
+import { isRedisEnabled } from '../../core/redis/redis-enabled';
 import { INTERACTIONS_INGEST_QUEUE } from './interactions.constants';
 import { InteractionsController } from './interactions.controller';
 import { InteractionsService } from './interactions.service';
 import { InteractionIngestProcessor } from './processors/interaction-ingest.processor';
 
-const isTestEnv = process.env.NODE_ENV === 'test' || process.env.E2E_TEST === 'true';
-
-const bullQueueImports = isTestEnv
-  ? []
-  : [
+const bullQueueImports = isRedisEnabled()
+  ? [
       BullModule.registerQueue({
         name: INTERACTIONS_INGEST_QUEUE,
         defaultJobOptions: {
@@ -19,21 +17,22 @@ const bullQueueImports = isTestEnv
           removeOnFail: false,
         },
       }),
-    ];
+    ]
+  : [];
 
-const bullProviders = isTestEnv
-  ? [
+const bullProviders = isRedisEnabled()
+  ? [InteractionsService, InteractionIngestProcessor]
+  : [
       InteractionsService,
       {
         provide: getQueueToken(INTERACTIONS_INGEST_QUEUE),
         useValue: {
           add: async () => {
-            throw new Error('Redis unavailable in test environment');
+            throw new Error('Redis disabled — using synchronous persistence');
           },
         },
       },
-    ]
-  : [InteractionsService, InteractionIngestProcessor];
+    ];
 
 @Module({
   imports: bullQueueImports,
