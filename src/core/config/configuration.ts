@@ -15,6 +15,7 @@ export default () => ({
   },
   redis: {
     url: process.env.REDIS_URL ?? 'redis://localhost:6379',
+    enabled: process.env.REDIS_ENABLED === 'true',
   },
   cors: {
     origins: (process.env.CORS_ORIGINS ?? 'http://localhost:3000,http://localhost:5173')
@@ -33,5 +34,13 @@ export default () => ({
     apiKey: process.env.AI_SERVICE_API_KEY ?? 'dev-ai-key-change-me',
     timeoutMs: parseInt(process.env.AI_SERVICE_TIMEOUT_MS ?? '5000', 10),
     useStub: process.env.AI_SERVICE_USE_STUB !== 'false',
+  },
+  aiChat: {
+    url:
+      process.env.AI_CHAT_URL ??
+      process.env.AI_SERVICE_URL ??
+      'https://nondesigned-alexis-unpliantly.ngrok-free.dev',
+    timeoutMs: parseInt(process.env.AI_CHAT_TIMEOUT_MS ?? process.env.AI_SERVICE_TIMEOUT_MS ?? '30000', 10),
+    useStub: process.env.AI_CHAT_USE_STUB === 'true',
   },
 });

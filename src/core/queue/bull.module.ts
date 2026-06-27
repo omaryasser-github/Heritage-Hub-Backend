@@ -1,12 +1,10 @@
 import { BullModule } from '@nestjs/bullmq';
 import { Global, Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { isRedisEnabled } from '../redis/redis-enabled';
 
-const isTestEnv = process.env.NODE_ENV === 'test' || process.env.E2E_TEST === 'true';
-
-const bullImports = isTestEnv
-  ? []
-  : [
+const bullImports = isRedisEnabled()
+  ? [
       BullModule.forRootAsync({
         imports: [ConfigModule],
         inject: [ConfigService],
@@ -18,7 +16,8 @@ const bullImports = isTestEnv
           },
         }),
       }),
-    ];
+    ]
+  : [];
 
 @Global()
 @Module({
